@@ -5,6 +5,7 @@ import { Fragment } from "react";
 import { Popover, Transition } from "@headlessui/react";
 import { MenuIcon, XIcon } from "@heroicons/react/outline";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const navigation = [
   {
@@ -26,7 +27,8 @@ interface ifcHomeProps {
 // @ts-ignore some type props BS i don't have the time to look into right now
 const Home: NextPage = ({ wallet, connectWallet, loading }: ifcHomeProps) => {
   if (wallet) {
-    return <p>{wallet}</p>;
+    const router = useRouter();
+    router.push("/dashboard");
   }
 
   if (loading) {
