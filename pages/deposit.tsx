@@ -50,6 +50,7 @@ const Deposit: NextPage = ({
     { name: "Offset", href: "/dashboard", current: false },
     { name: "Deposit", href: "/deposit", current: true },
     { name: "Redeem", href: "/redeem", current: false },
+    { name: "Help", href: "/help", current: false },
   ];
   const userNavigation = [
     {

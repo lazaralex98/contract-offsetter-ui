@@ -2,18 +2,14 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import AppNavbar from "../components/AppNavbar";
 
-interface ifcRedeemProps {
+interface ifcHelpProps {
   wallet: string;
   connectWallet: Function;
   loading: boolean;
 }
 
 // @ts-ignore some type props BS i don't have the time to look into right now
-const Redeem: NextPage = ({
-  wallet,
-  connectWallet,
-  loading,
-}: ifcRedeemProps) => {
+const Help: NextPage = ({ wallet, connectWallet, loading }: ifcHelpProps) => {
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -49,8 +45,8 @@ const Redeem: NextPage = ({
   const navigation = [
     { name: "Offset", href: "/dashboard", current: false },
     { name: "Deposit", href: "/deposit", current: false },
-    { name: "Redeem", href: "/redeem", current: true },
-    { name: "Help", href: "/help", current: false },
+    { name: "Redeem", href: "/redeem", current: false },
+    { name: "Help", href: "/help", current: true },
   ];
   const userNavigation = [
     {
@@ -63,7 +59,7 @@ const Redeem: NextPage = ({
   return (
     <>
       <Head>
-        <title>Redeem</title>
+        <title>Help</title>
       </Head>
       <div className="min-h-full">
         <AppNavbar
@@ -75,7 +71,7 @@ const Redeem: NextPage = ({
           <header>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <h1 className="text-3xl font-bold leading-tight text-gray-900">
-                Redeem
+                Help
               </h1>
             </div>
           </header>
@@ -94,4 +90,4 @@ const Redeem: NextPage = ({
   );
 };
 
-export default Redeem;
+export default Help;
