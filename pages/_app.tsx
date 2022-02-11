@@ -49,6 +49,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         connectWallet={connectWallet}
         loading={loading}
         disconnectWallet={disconnectWallet}
+        setLoading={setLoading}
         {...pageProps}
       />
       <ToastContainer />
