@@ -145,6 +145,38 @@ const Deposit: NextPage = ({
   };
 
   // TODO how do I display all tokens that someone may hold within the contract (that's BCT + all TCO2s)
+  const fetchBalances = () => {
+    try {
+      if (!wallet) {
+        throw new Error("Connect your wallet first.");
+      }
+      setLoading(true);
+
+      // @ts-ignore
+      const { ethereum } = window;
+      if (!ethereum) {
+        throw new Error("You need Metamask.");
+      }
+
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+
+      // get portal to ContractOffsetter
+      // @ts-ignore
+      const co: ContractOffsetter = new ethers.Contract(
+        process.env.NEXT_PUBLIC_CONTRACT_OFFSETTER_ADDRESS_MUMBAI || "",
+        coAbi.abi,
+        signer
+      );
+
+      co.balances(wallet, TCO2Address);
+    } catch (error: any) {
+      console.error("error when fetching balances", error);
+      toast.error(error.message, toastOptions);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
