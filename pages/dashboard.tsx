@@ -61,6 +61,8 @@ const Dashboard: NextPage = ({
     { name: "Disconnect", href: "/disconnect" },
   ];
 
+  // TODO how do I get someone's ALL transactions?
+
   return (
     <>
       <Head>

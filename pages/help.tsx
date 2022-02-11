@@ -57,6 +57,8 @@ const Help: NextPage = ({ wallet, connectWallet, loading }: ifcHelpProps) => {
     { name: "Disconnect", href: "/disconnect" },
   ];
 
+  // TODO when you're done with the dapp, make content explaining how to use it
+
   return (
     <>
       <Head>
