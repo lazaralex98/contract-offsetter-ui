@@ -81,9 +81,89 @@ const Deposit: NextPage = ({
           <main>
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
               {/* Replace with your content */}
-              <div className="px-4 py-8 sm:px-0">
-                <div className="border-4 border-dashed border-gray-200 rounded-lg h-96" />
-              </div>
+              <form className="space-y-8 divide-y divide-gray-200">
+                <div className="space-y-8 divide-y divide-gray-200">
+                  <div className="pt-8">
+                    <div>
+                      <p className="mt-1 text-sm text-gray-500">
+                        Choose what you want to deposit and how much.
+                      </p>
+                    </div>
+                    <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                      {/* say amount to deposit */}
+                      <div className="sm:col-span-4">
+                        <label
+                          htmlFor="email"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          Amount to deposit
+                        </label>
+                        <div className="mt-1">
+                          <input
+                            id="email"
+                            name="email"
+                            type="email"
+                            autoComplete="email"
+                            className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                          />
+                        </div>
+                      </div>
+
+                      {/* select coin to deposit */}
+                      <div className="sm:col-span-3">
+                        <label
+                          htmlFor="country"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          What do you want to deposit?
+                        </label>
+                        <div className="mt-1">
+                          <select
+                            id="country"
+                            name="country"
+                            autoComplete="country-name"
+                            className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                          >
+                            <option>United States</option>
+                            <option>Canada</option>
+                            <option>Mexico</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* if TCO2, say address of TCO2 you want to deposit */}
+                      <div className="sm:col-span-4">
+                        <label
+                          htmlFor="email"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          TCO2 address
+                        </label>
+                        <div className="mt-1">
+                          <input
+                            id="email"
+                            name="email"
+                            type="email"
+                            autoComplete="email"
+                            className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-5">
+                  <div className="flex justify-end">
+                    <button
+                      type="submit"
+                      className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                      Deposit
+                    </button>
+                  </div>
+                </div>
+              </form>
               {/* /End replace */}
             </div>
           </main>
