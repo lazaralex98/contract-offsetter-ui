@@ -1,12 +1,22 @@
+import { ethers } from "ethers";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import AppNavbar from "../components/AppNavbar";
+import { ContractOffsetter } from "../contract-utils/ContractOffsetter";
+import * as coAbi from "../contract-utils/ContractOffsetter.json";
+import * as bctAbi from "../contract-utils/BaseCarbonTonne.json";
+import * as tco2Abi from "../contract-utils/ToucanCarbonOffsets.json";
+import toastOptions from "../utils/toastOptions";
+import { BaseCarbonTonne } from "../contract-utils/BaseCarbonTonne";
+import { ToucanCarbonOffsets } from "../contract-utils/ToucanCarbonOffsets";
 
 interface ifcDepositProps {
   wallet: string;
   connectWallet: Function;
   loading: boolean;
+  setLoading: Function;
 }
 
 // @ts-ignore some type props BS i don't have the time to look into right now
@@ -14,6 +24,7 @@ const Deposit: NextPage = ({
   wallet,
   connectWallet,
   loading,
+  setLoading,
 }: ifcDepositProps) => {
   if (loading) {
     return <p>Loading...</p>;
@@ -65,10 +76,80 @@ const Deposit: NextPage = ({
   const [token, setToken] = useState<string>("BCT");
   const [TCO2Address, setTCO2Address] = useState<string>("");
 
-  const handleDeposit = () => {
-    console.log("amount", amount);
-    console.log("token", token);
-    console.log("tco2Address", TCO2Address);
+  const handleDeposit = async () => {
+    try {
+      if (!wallet) {
+        throw new Error("Connect your wallet first.");
+      }
+      setLoading(true);
+
+      if (token == "TCO2" && TCO2Address == "") {
+        throw new Error(
+          "To deposit a TCO2, you need to mention the address of the TCO2 you want deposited."
+        );
+      }
+
+      // @ts-ignore
+      const { ethereum } = window;
+      if (!ethereum) {
+        throw new Error("You need Metamask.");
+      }
+
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+
+      // TODO some sort of error when invoking this contract
+
+      // get portal to the token the user wants deposited (BCT or TCO2 for now)
+      if (token == "TCO2") {
+        const tokenPortal = new ethers.Contract(
+          TCO2Address,
+          tco2Abi.abi,
+          signer
+        );
+        console.log("token portal", tokenPortal);
+      } else {
+        const tokenPortal = new ethers.Contract(
+          process.env.BCT_ADDRESS_MUMBAI || "",
+          bctAbi.abi,
+          signer
+        );
+        console.log("token portal", tokenPortal);
+      }
+
+      return;
+
+      // get portal to ContractOffsetter
+      const co = new ethers.Contract(
+        process.env.CONTRACT_OFFSETTER_ADDRESS_MUMBAI || "",
+        coAbi.abi,
+        signer
+      );
+
+      // token needs to approve ContractOffsetter first
+      await (
+        await tokenPortal.approve(co.address, ethers.utils.parseEther(amount))
+      ).wait();
+
+      // we then deposit the amount of TCO2/BCT into the ContractOffsetter
+      const depositTxn = await co.deposit(
+        TCO2Address,
+        ethers.utils.parseEther(amount),
+        {
+          gasLimit: 1200000,
+        }
+      );
+      await depositTxn.wait();
+
+      console.log("deposit hash", depositTxn.hash);
+
+      toast(`You deposited ${amount} TCO2s`, toastOptions);
+    } catch (error: any) {
+      console.error("error when depositing TCO2", error);
+      toast.error(error.message, toastOptions);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -121,6 +202,7 @@ const Deposit: NextPage = ({
                             onChange={(e) => {
                               setAmount(e.target.value);
                             }}
+                            value={amount}
                             id="amount"
                             name="amount"
                             type="text"
@@ -170,6 +252,7 @@ const Deposit: NextPage = ({
                               onChange={(e) => {
                                 setTCO2Address(e.target.value);
                               }}
+                              value={TCO2Address}
                               id="tco2Address"
                               name="tco2Address"
                               type="text"
