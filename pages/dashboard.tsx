@@ -35,8 +35,6 @@ const Dashboard: NextPage = ({
   }
 
   if (!wallet) {
-    const router = useRouter();
-
     return (
       <div className="rounded-md bg-red-50 p-4">
         <div className="flex">
@@ -55,15 +53,6 @@ const Dashboard: NextPage = ({
                   className="bg-red-200 px-2 py-1.5 rounded-md text-sm font-medium text-red-800 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-grereden-50 focus:ring-red-600"
                 >
                   Connect wallet
-                </button>
-                <button
-                  onClick={() => {
-                    router.push("/");
-                  }}
-                  type="button"
-                  className="ml-2 bg-red-200 px-2 py-1.5 rounded-md text-sm font-medium text-red-800 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-grereden-50 focus:ring-red-600"
-                >
-                  Go back home
                 </button>
               </div>
             </div>
