@@ -43,8 +43,7 @@ const Dashboard: NextPage = ({
           <div className="flex-shrink-0"></div>
           <div className="ml-3">
             <h3 className="text-sm font-medium text-red-800">
-              You need to connect your wallet to access this page. Go back home
-              to do that.
+              You need to connect your wallet to access this page.
             </h3>
             <div className="mt-4">
               <div className="flex">
