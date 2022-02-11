@@ -99,23 +99,20 @@ const Deposit: NextPage = ({
       const provider = new ethers.providers.Web3Provider(ethereum);
       const signer = provider.getSigner();
 
-      // get portal to the token the user wants deposited (BCT or TCO2 for now)
-      let tokenPortal;
-      if (token == "TCO2") {
-        tokenPortal = new ethers.Contract(TCO2Address, tco2Abi.abi, signer);
-      } else {
-        tokenPortal = new ethers.Contract(
-          process.env.NEXT_PUBLIC_BCT_ADDRESS_MUMBAI || "",
-          bctAbi.abi,
-          signer
-        );
-      }
-
       // get portal to ContractOffsetter
       // @ts-ignore
       const co: ContractOffsetter = new ethers.Contract(
         process.env.NEXT_PUBLIC_CONTRACT_OFFSETTER_ADDRESS_MUMBAI || "",
         coAbi.abi,
+        signer
+      );
+
+      // get portal to the token the user wants deposited (BCT or TCO2 for now)
+      const tokenPortal = new ethers.Contract(
+        token == "TCO2"
+          ? TCO2Address
+          : process.env.NEXT_PUBLIC_BCT_ADDRESS_MUMBAI || "",
+        token == "TCO2" ? tco2Abi.abi : bctAbi.abi,
         signer
       );
 
@@ -126,7 +123,9 @@ const Deposit: NextPage = ({
 
       // we then deposit the amount of TCO2/BCT into the ContractOffsetter
       const depositTxn = await co.deposit(
-        TCO2Address,
+        token == "TCO2"
+          ? TCO2Address
+          : process.env.NEXT_PUBLIC_BCT_ADDRESS_MUMBAI || "",
         ethers.utils.parseEther(amount),
         {
           gasLimit: 1200000,
