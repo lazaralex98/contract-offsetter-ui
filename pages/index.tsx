@@ -17,7 +17,22 @@ const navigation = [
   },
 ];
 
-const Home: NextPage = () => {
+interface ifcHomeProps {
+  wallet: string;
+  connectWallet: Function;
+  loading: boolean;
+}
+
+// @ts-ignore some type props BS i don't have the time to look into right now
+const Home: NextPage = ({ wallet, connectWallet, loading }: ifcHomeProps) => {
+  if (wallet) {
+    return <p>{wallet}</p>;
+  }
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <div>
       <Head>
@@ -65,7 +80,12 @@ const Home: NextPage = () => {
                 </div>
                 <div className="hidden md:absolute md:flex md:items-center md:justify-end md:inset-y-0 md:right-0">
                   <span className="inline-flex rounded-md shadow">
-                    <button className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-gray-50">
+                    <button
+                      onClick={() => {
+                        connectWallet();
+                      }}
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-gray-50"
+                    >
                       Connect wallet
                     </button>
                   </span>
@@ -112,7 +132,12 @@ const Home: NextPage = () => {
                       </Link>
                     ))}
                   </div>
-                  <button className="block w-full px-5 py-3 text-center font-medium text-indigo-600 bg-gray-50 hover:bg-gray-100">
+                  <button
+                    onClick={() => {
+                      connectWallet();
+                    }}
+                    className="block w-full px-5 py-3 text-center font-medium text-indigo-600 bg-gray-50 hover:bg-gray-100"
+                  >
                     Connect wallet
                   </button>
                 </div>
@@ -136,7 +161,12 @@ const Home: NextPage = () => {
               </p>
               <div className="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
                 <div className="rounded-md shadow">
-                  <button className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10">
+                  <button
+                    onClick={() => {
+                      connectWallet();
+                    }}
+                    className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10"
+                  >
                     Connect wallet
                   </button>
                 </div>
