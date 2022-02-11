@@ -144,7 +144,7 @@ const Deposit: NextPage = ({
     }
   };
 
-  // TODO how do I display all tokens that someone may hold (that's BCT + all TCO2s)
+  // TODO how do I display all tokens that someone may hold within the contract (that's BCT + all TCO2s)
 
   return (
     <>
