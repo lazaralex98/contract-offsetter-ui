@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import AppNavbar from "../components/AppNavbar";
+import { Loader } from "../components/Loader";
 
 interface ifcRedeemProps {
   wallet: string;
@@ -15,7 +16,7 @@ const Redeem: NextPage = ({
   loading,
 }: ifcRedeemProps) => {
   if (loading) {
-    return <p>Loading...</p>;
+    return <Loader />;
   }
 
   if (!wallet) {

@@ -11,6 +11,7 @@ import * as tco2Abi from "../contract-utils/ToucanCarbonOffsets.json";
 import toastOptions from "../utils/toastOptions";
 import { BaseCarbonTonne } from "../contract-utils/BaseCarbonTonne";
 import { ToucanCarbonOffsets } from "../contract-utils/ToucanCarbonOffsets";
+import { Loader } from "../components/Loader";
 
 interface ifcDepositProps {
   wallet: string;
@@ -27,7 +28,7 @@ const Deposit: NextPage = ({
   setLoading,
 }: ifcDepositProps) => {
   if (loading) {
-    return <p>Loading...</p>;
+    return <Loader />;
   }
 
   if (!wallet) {

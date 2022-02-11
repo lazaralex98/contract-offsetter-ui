@@ -6,6 +6,7 @@ import { Popover, Transition } from "@headlessui/react";
 import { MenuIcon, XIcon } from "@heroicons/react/outline";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { Loader } from "../components/Loader";
 
 const navigation = [
   {
@@ -32,7 +33,7 @@ const Home: NextPage = ({ wallet, connectWallet, loading }: ifcHomeProps) => {
   }
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <Loader />;
   }
 
   return (

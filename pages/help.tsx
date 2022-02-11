@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import AppNavbar from "../components/AppNavbar";
+import { Loader } from "../components/Loader";
 
 interface ifcHelpProps {
   wallet: string;
@@ -11,7 +12,7 @@ interface ifcHelpProps {
 // @ts-ignore some type props BS i don't have the time to look into right now
 const Help: NextPage = ({ wallet, connectWallet, loading }: ifcHelpProps) => {
   if (loading) {
-    return <p>Loading...</p>;
+    return <Loader />;
   }
 
   if (!wallet) {
