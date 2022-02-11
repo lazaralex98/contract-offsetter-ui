@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import { useState } from "react";
 import AppNavbar from "../components/AppNavbar";
 
 interface ifcDepositProps {
@@ -60,6 +61,16 @@ const Deposit: NextPage = ({
     { name: "Disconnect", href: "/disconnect" },
   ];
 
+  const [amount, setAmount] = useState<string>("1.0");
+  const [token, setToken] = useState<string>("BCT");
+  const [TCO2Address, setTCO2Address] = useState<string>("");
+
+  const handleDeposit = () => {
+    console.log("amount", amount);
+    console.log("token", token);
+    console.log("tco2Address", TCO2Address);
+  };
+
   return (
     <>
       <Head>
@@ -82,7 +93,13 @@ const Deposit: NextPage = ({
           <main>
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
               {/* Replace with your content */}
-              <form className="space-y-8 divide-y divide-gray-200">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleDeposit();
+                }}
+                className="space-y-8 divide-y divide-gray-200"
+              >
                 <div className="space-y-8 divide-y divide-gray-200">
                   <div className="pt-8">
                     <div>
@@ -101,10 +118,13 @@ const Deposit: NextPage = ({
                         </label>
                         <div className="mt-1">
                           <input
-                            id="email"
-                            name="email"
-                            type="email"
-                            autoComplete="email"
+                            onChange={(e) => {
+                              setAmount(e.target.value);
+                            }}
+                            id="amount"
+                            name="amount"
+                            type="text"
+                            autoComplete="amount"
                             className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                           />
                         </div>
@@ -120,36 +140,45 @@ const Deposit: NextPage = ({
                         </label>
                         <div className="mt-1">
                           <select
-                            id="country"
-                            name="country"
-                            autoComplete="country-name"
+                            onChange={(e) => {
+                              setToken(e.target.value);
+                            }}
+                            id="token"
+                            name="token"
+                            autoComplete="token"
                             className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                           >
-                            <option>United States</option>
-                            <option>Canada</option>
-                            <option>Mexico</option>
+                            <option value="BCT">BCT</option>
+                            <option value="TCO2">TCO2</option>
                           </select>
                         </div>
                       </div>
 
                       {/* if TCO2, say address of TCO2 you want to deposit */}
-                      <div className="sm:col-span-4">
-                        <label
-                          htmlFor="email"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          TCO2 address
-                        </label>
-                        <div className="mt-1">
-                          <input
-                            id="email"
-                            name="email"
-                            type="email"
-                            autoComplete="email"
-                            className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                          />
+                      {token == "BCT" ? (
+                        ""
+                      ) : (
+                        <div className="sm:col-span-4">
+                          <label
+                            htmlFor="email"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            TCO2 address
+                          </label>
+                          <div className="mt-1">
+                            <input
+                              onChange={(e) => {
+                                setTCO2Address(e.target.value);
+                              }}
+                              id="tco2Address"
+                              name="tco2Address"
+                              type="text"
+                              autoComplete="tco2Address"
+                              className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                            />
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                   </div>
                 </div>
