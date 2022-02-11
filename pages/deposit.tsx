@@ -111,7 +111,8 @@ const Deposit: NextPage = ({
       }
 
       // get portal to ContractOffsetter
-      const co = new ethers.Contract(
+      // @ts-ignore
+      const co: ContractOffsetter = new ethers.Contract(
         process.env.NEXT_PUBLIC_CONTRACT_OFFSETTER_ADDRESS_MUMBAI || "",
         coAbi.abi,
         signer
@@ -136,7 +137,7 @@ const Deposit: NextPage = ({
 
       toast(`You deposited ${amount} TCO2s`, toastOptions);
     } catch (error: any) {
-      console.error("error when depositing TCO2", error);
+      console.error("error when depositing", error);
       toast.error(error.message, toastOptions);
     } finally {
       setLoading(false);
