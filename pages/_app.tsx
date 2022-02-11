@@ -4,6 +4,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { useState } from "react";
 import { ethers } from "ethers";
 import toastOptions from "../utils/toastOptions";
+import "react-toastify/dist/ReactToastify.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [wallet, setWallet] = useState<string | null>(null);
