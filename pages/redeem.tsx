@@ -2,18 +2,18 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import AppNavbar from "../components/AppNavbar";
 
-interface ifcDashboardProps {
+interface ifcRedeemProps {
   wallet: string;
   connectWallet: Function;
   loading: boolean;
 }
 
 // @ts-ignore some type props BS i don't have the time to look into right now
-const Dashboard: NextPage = ({
+const Redeem: NextPage = ({
   wallet,
   connectWallet,
   loading,
-}: ifcDashboardProps) => {
+}: ifcRedeemProps) => {
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -47,9 +47,9 @@ const Dashboard: NextPage = ({
   }
 
   const navigation = [
-    { name: "Offset", href: "/dashboard", current: true },
+    { name: "Offset", href: "/dashboard", current: false },
     { name: "Deposit", href: "/deposit", current: false },
-    { name: "Redeem", href: "/redeem", current: false },
+    { name: "Redeem", href: "/redeem", current: true },
   ];
   const userNavigation = [
     {
@@ -62,7 +62,7 @@ const Dashboard: NextPage = ({
   return (
     <>
       <Head>
-        <title>Dashboard</title>
+        <title>Redeem</title>
       </Head>
       <div className="min-h-full">
         <AppNavbar
@@ -74,7 +74,7 @@ const Dashboard: NextPage = ({
           <header>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <h1 className="text-3xl font-bold leading-tight text-gray-900">
-                Dashboard
+                Redeem
               </h1>
             </div>
           </header>
@@ -93,4 +93,4 @@ const Dashboard: NextPage = ({
   );
 };
 
-export default Dashboard;
+export default Redeem;
