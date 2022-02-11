@@ -7,24 +7,6 @@ import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
 
-const user = {
-  name: "Tom Cook",
-  email: "tom@example.com",
-  imageUrl:
-    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-};
-const navigation = [
-  { name: "Dashboard", href: "#", current: true },
-  { name: "Team", href: "#", current: false },
-  { name: "Projects", href: "#", current: false },
-  { name: "Calendar", href: "#", current: false },
-];
-const userNavigation = [
-  { name: "Your Profile", href: "#" },
-  { name: "Settings", href: "#" },
-  { name: "Sign out", href: "#" },
-];
-
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
@@ -73,18 +55,24 @@ const Dashboard: NextPage = ({
     );
   }
 
+  const navigation = [
+    { name: "Offset", href: "#", current: true },
+    { name: "Deposit", href: "#", current: false },
+    { name: "Redeem", href: "#", current: false },
+  ];
+  const userNavigation = [
+    {
+      name: "Your wallet",
+      href: `https://mumbai.polygonscan.com/address/${wallet}`,
+    },
+    { name: "Disconnect", href: "/disconnect" },
+  ];
+
   return (
-    /* This example requires Tailwind CSS v2.0+ */
-
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full">
-        <body class="h-full">
-        ```
-      */}
+      <Head>
+        <title>Dashboard</title>
+      </Head>
       <div className="min-h-full">
         <Disclosure as="nav" className="bg-white border-b border-gray-200">
           {({ open }) => (
@@ -93,15 +81,12 @@ const Dashboard: NextPage = ({
                 <div className="flex justify-between h-16">
                   <div className="flex">
                     <div className="flex-shrink-0 flex items-center">
-                      <img
+                      <Image
+                        src="/toucan-logo.svg"
+                        height={128}
+                        width={128}
                         className="block lg:hidden h-8 w-auto"
-                        src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
-                        alt="Workflow"
-                      />
-                      <img
-                        className="hidden lg:block h-8 w-auto"
-                        src="https://tailwindui.com/img/logos/workflow-logo-indigo-600-mark-gray-800-text.svg"
-                        alt="Workflow"
+                        alt="Toucan Logo"
                       />
                     </div>
                     <div className="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
@@ -123,24 +108,17 @@ const Dashboard: NextPage = ({
                     </div>
                   </div>
                   <div className="hidden sm:ml-6 sm:flex sm:items-center">
-                    <button
-                      type="button"
-                      className="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                      <span className="sr-only">View notifications</span>
-                      <BellIcon className="h-6 w-6" aria-hidden="true" />
-                    </button>
-
                     {/* Profile dropdown */}
                     <Menu as="div" className="ml-3 relative">
                       <div>
-                        <Menu.Button className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <Menu.Button className="max-w-xs bg-white flex items-center text-sm">
                           <span className="sr-only">Open user menu</span>
-                          <img
-                            className="h-8 w-8 rounded-full"
-                            src={user.imageUrl}
-                            alt=""
-                          />
+                          <button
+                            type="button"
+                            className="inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                          >
+                            {wallet}
+                          </button>
                         </Menu.Button>
                       </div>
                       <Transition
@@ -210,28 +188,11 @@ const Dashboard: NextPage = ({
                 </div>
                 <div className="pt-4 pb-3 border-t border-gray-200">
                   <div className="flex items-center px-4">
-                    <div className="flex-shrink-0">
-                      <img
-                        className="h-10 w-10 rounded-full"
-                        src={user.imageUrl}
-                        alt=""
-                      />
-                    </div>
-                    <div className="ml-3">
-                      <div className="text-base font-medium text-gray-800">
-                        {user.name}
-                      </div>
+                    <div>
                       <div className="text-sm font-medium text-gray-500">
-                        {user.email}
+                        {wallet}
                       </div>
                     </div>
-                    <button
-                      type="button"
-                      className="ml-auto bg-white flex-shrink-0 p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                      <span className="sr-only">View notifications</span>
-                      <BellIcon className="h-6 w-6" aria-hidden="true" />
-                    </button>
                   </div>
                   <div className="mt-3 space-y-1">
                     {userNavigation.map((item) => (
