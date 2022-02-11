@@ -38,12 +38,17 @@ function MyApp({ Component, pageProps }: AppProps) {
     }
   };
 
+  const disconnectWallet = () => {
+    setWallet(null);
+  };
+
   return (
     <>
       <Component
         wallet={wallet}
         connectWallet={connectWallet}
         loading={loading}
+        disconnectWallet={disconnectWallet}
         {...pageProps}
       />
       <ToastContainer />
