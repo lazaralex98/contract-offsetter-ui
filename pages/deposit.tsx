@@ -98,30 +98,21 @@ const Deposit: NextPage = ({
       const provider = new ethers.providers.Web3Provider(ethereum);
       const signer = provider.getSigner();
 
-      // TODO some sort of error when invoking this contract
-
       // get portal to the token the user wants deposited (BCT or TCO2 for now)
+      let tokenPortal;
       if (token == "TCO2") {
-        const tokenPortal = new ethers.Contract(
-          TCO2Address,
-          tco2Abi.abi,
-          signer
-        );
-        console.log("token portal", tokenPortal);
+        tokenPortal = new ethers.Contract(TCO2Address, tco2Abi.abi, signer);
       } else {
-        const tokenPortal = new ethers.Contract(
-          process.env.BCT_ADDRESS_MUMBAI || "",
+        tokenPortal = new ethers.Contract(
+          process.env.NEXT_PUBLIC_BCT_ADDRESS_MUMBAI || "",
           bctAbi.abi,
           signer
         );
-        console.log("token portal", tokenPortal);
       }
-
-      return;
 
       // get portal to ContractOffsetter
       const co = new ethers.Contract(
-        process.env.CONTRACT_OFFSETTER_ADDRESS_MUMBAI || "",
+        process.env.NEXT_PUBLIC_CONTRACT_OFFSETTER_ADDRESS_MUMBAI || "",
         coAbi.abi,
         signer
       );
