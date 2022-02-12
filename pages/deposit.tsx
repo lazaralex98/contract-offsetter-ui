@@ -12,7 +12,7 @@ import toastOptions from "../utils/toastOptions";
 import { BaseCarbonTonne } from "../contract-utils/BaseCarbonTonne";
 import { ToucanCarbonOffsets } from "../contract-utils/ToucanCarbonOffsets";
 import { Loader } from "../components/Loader";
-import ConnectWalletAlert from "../components/connectWalletAlert";
+import ConnectWalletAlert from "../components/ConnectWalletAlert";
 
 interface ifcDepositProps {
   wallet: string;

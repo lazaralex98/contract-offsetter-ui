@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import AppNavbar from "../components/AppNavbar";
-import ConnectWalletAlert from "../components/connectWalletAlert";
+import ConnectWalletAlert from "../components/ConnectWalletAlert";
 import { Loader } from "../components/Loader";
 
 interface ifcHelpProps {
