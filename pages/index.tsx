@@ -15,7 +15,7 @@ const navigation = [
   },
   {
     name: "Contract Offseter Polygonscan",
-    href: "https://mumbai.polygonscan.com/address/0x4f78BE049AB771Be0A9095B4d9DeB8bdeff9Ba03",
+    href: `https://mumbai.polygonscan.com/address/${process.env.NEXT_PUBLIC_CONTRACT_OFFSETTER_ADDRESS_MUMBAI}`,
   },
 ];
 
