@@ -148,6 +148,9 @@ const Deposit: NextPage = ({
   // and than, for each token,  it checks the balance of the user within the contract
   // and lastly it returns an array of all these addresses and balances for these tokens
   // so that I may render a view of all this user's balances.
+  //
+  // It seems to me that I have to simply loop over ALL known tokens and ‘manually’ check each token’s balance.
+  // That seems resource intensive to me. Also, I do not have a list of all TCO2s.
   const fetchBalances = () => {
     try {
       if (!wallet) {
