@@ -190,8 +190,10 @@ const Deposit: NextPage = ({
           return { ...tokenType, balance };
         })
       );
-      console.log("balances", balances);
-      setBalances(balances);
+      const sortedBalances = balances.filter((token) => {
+        return token.balance != "0.0";
+      });
+      setBalances(sortedBalances);
     } catch (error: any) {
       console.error("error when fetching balances", error);
       toast.error(error.message, toastOptions);
