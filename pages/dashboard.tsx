@@ -93,7 +93,8 @@ const Dashboard: NextPage = ({
     }
   };
 
-  // TODO prepare transactions such that you have: overall_emmissions and offset_status (for each transaction)
+  // TODO prepare transactions such that you have offset_status (for each transaction)
+
   const calculateOverallGas = (transactions: ifcTransaction[]) => {
     let overallGas: number = 0;
     transactions?.forEach((transaction) => {
@@ -198,10 +199,13 @@ const Dashboard: NextPage = ({
                                   scope="col"
                                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                 >
-                                  Status
+                                  Transaction Status
                                 </th>
-                                <th scope="col" className="relative px-6 py-3">
-                                  <span className="sr-only">Edit</span>
+                                <th
+                                  scope="col"
+                                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                >
+                                  Offset Status
                                 </th>
                               </tr>
                             </thead>
@@ -232,13 +236,8 @@ const Dashboard: NextPage = ({
                                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     {transaction.txreceipt_status}
                                   </td>
-                                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <a
-                                      href="#"
-                                      className="text-indigo-600 hover:text-indigo-900"
-                                    >
-                                      Edit
-                                    </a>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    Not offset
                                   </td>
                                 </tr>
                               ))}
