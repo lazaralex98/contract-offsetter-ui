@@ -1,3 +1,4 @@
+import { ethers } from "ethers";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
@@ -7,6 +8,10 @@ import AppNavbar from "../components/AppNavbar";
 import ConnectWalletAlert from "../components/connectWalletAlert";
 import { Loader } from "../components/Loader";
 import toastOptions from "../utils/toastOptions";
+import * as coAbi from "../contract-utils/ContractOffsetter.json";
+import { ContractOffsetter } from "../contract-utils/ContractOffsetter";
+
+// TODO needs major cleanup
 
 interface ifcDashboardProps {
   wallet: string;
@@ -36,6 +41,14 @@ interface ifcTransaction {
   value: string;
 }
 
+interface ifcFormattedTransaction {
+  hash: string;
+  gasUsed: string;
+  nonce: string;
+  transactionStatus: string;
+  offsetStatus: boolean | undefined;
+}
+
 // @ts-ignore some type props BS i don't have the time to look into right now
 const Dashboard: NextPage = ({
   wallet,
@@ -43,9 +56,9 @@ const Dashboard: NextPage = ({
   loading,
   setLoading,
 }: ifcDashboardProps) => {
-  const [transactions, setTransactions] = useState<ifcTransaction[] | null>(
-    null
-  );
+  const [transactions, setTransactions] = useState<
+    ifcFormattedTransaction[] | null
+  >(null);
   const [overallGas, setOverallGas] = useState<number>(0);
   const [overallEmmissions, setOverallEmmissions] = useState<number>(0);
 
@@ -85,7 +98,26 @@ const Dashboard: NextPage = ({
       calculateOverallGas(data.data.result);
       calculateOverallFootprint(data.data.result);
 
-      setTransactions(data.data.result);
+      const formattedTransactions = await Promise.all(
+        data.data.result.map(async (transaction: ifcTransaction) => {
+          const offsetStatus = await fetchOffsetStatus(
+            wallet,
+            transaction.nonce
+          );
+          console.log("offsetStatus", offsetStatus);
+
+          const formattedTransaction: ifcFormattedTransaction = {
+            hash: transaction.hash,
+            gasUsed: transaction.gasUsed,
+            nonce: transaction.nonce,
+            transactionStatus: transaction.txreceipt_status,
+            offsetStatus: offsetStatus,
+          };
+          return formattedTransaction;
+        })
+      );
+
+      setTransactions(formattedTransactions);
     } catch (error: any) {
       toast.error(error.message, toastOptions);
     } finally {
@@ -93,7 +125,45 @@ const Dashboard: NextPage = ({
     }
   };
 
-  // TODO prepare transactions such that you have offset_status (for each transaction)
+  /**
+   *
+   * @param address address of transaction owner
+   * @param nonce nonce of transaction
+   * @returns true/false (wether the transaction has been offset)
+   */
+  const fetchOffsetStatus = async (address: string, nonce: string) => {
+    try {
+      if (!wallet) {
+        throw new Error("Connect your wallet first.");
+      }
+
+      // @ts-ignore
+      const { ethereum } = window;
+      if (!ethereum) {
+        throw new Error("You need Metamask.");
+      }
+
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+
+      // get portal to ContractOffsetter
+      // @ts-ignore
+      const co: ContractOffsetter = new ethers.Contract(
+        process.env.NEXT_PUBLIC_CONTRACT_OFFSETTER_ADDRESS_MUMBAI || "",
+        coAbi.abi,
+        signer
+      );
+
+      const offsetStatus = await co.nonceStatuses(
+        address,
+        ethers.utils.parseEther(nonce)
+      );
+
+      return offsetStatus;
+    } catch (error: any) {
+      console.error("error when fetching offset status", error);
+    }
+  };
 
   const calculateOverallGas = (transactions: ifcTransaction[]) => {
     let overallGas: number = 0;
@@ -107,8 +177,6 @@ const Dashboard: NextPage = ({
     const overallFootprint: number = transactions?.length * 0.00036; // 0.00000036 TCO2 or 0.00036 kg per transaction
     setOverallEmmissions(overallFootprint);
   };
-
-  console.log("overall emmissions (TCO2)", overallEmmissions);
 
   return (
     <>
@@ -234,10 +302,10 @@ const Dashboard: NextPage = ({
                                     {transaction.nonce}
                                   </td>
                                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {transaction.txreceipt_status}
+                                    {transaction.transactionStatus}
                                   </td>
                                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    Not offset
+                                    {String(transaction.offsetStatus)}
                                   </td>
                                 </tr>
                               ))}
@@ -252,8 +320,8 @@ const Dashboard: NextPage = ({
                     <button
                       type="button"
                       className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                      onClick={() => {
-                        getTransactionsOfAddress(wallet);
+                      onClick={async () => {
+                        await getTransactionsOfAddress(wallet);
                       }}
                     >
                       Load My Transactions
