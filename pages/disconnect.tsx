@@ -19,7 +19,7 @@ const Disconnect: NextPage = ({ disconnectWallet }: ifcDisconnectProps) => {
         <div className="flex-shrink-0"></div>
         <div className="ml-3">
           <h3 className="text-sm font-medium text-blue-800">
-            You need to connect your wallet to access this page.
+            Have a good one.
           </h3>
           <div className="mt-4">
             <div className="flex">
