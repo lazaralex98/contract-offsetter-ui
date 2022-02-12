@@ -147,7 +147,7 @@ const Deposit: NextPage = ({
   // TODO I need a function that checks ALL tokens the contract actually holds
   // and than, for each token,  it checks the balance of the user within the contract
   // and lastly it returns an array of all these addresses and balances for these tokens
-  // so that I may render a view of all this user's balances
+  // so that I may render a view of all this user's balances.
   const fetchBalances = () => {
     try {
       if (!wallet) {
