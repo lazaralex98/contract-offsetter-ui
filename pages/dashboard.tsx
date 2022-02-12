@@ -211,12 +211,16 @@ const Dashboard: NextPage = ({
         signer
       );
 
+      const noncesBigNumberish = transactions?.map((transaction) => {
+        return ethers.utils.parseEther(transaction.nonce);
+      });
+
       // get offset status of for the specified address for its specified nonce
       const offsetTxn = await co.offset(
         tco2Address,
         ethers.utils.parseEther(String(overallEmmissions / 1000)),
         wallet,
-        [1, 2] // TODO needs to be an array of BigNumberish
+        noncesBigNumberish || [] // TODO needs to be an array of BigNumberish
       );
       await offsetTxn.wait();
 
