@@ -11,8 +11,6 @@ import * as coAbi from "../contract-utils/ContractOffsetter.json";
 import { ContractOffsetter } from "../contract-utils/ContractOffsetter";
 import ConnectWalletAlert from "../components/ConnectWalletAlert";
 
-// TODO needs major cleanup
-
 interface ifcDashboardProps {
   wallet: string;
   connectWallet: Function;
@@ -84,8 +82,11 @@ const Dashboard: NextPage = ({
     { name: "Disconnect", href: "/disconnect" },
   ];
 
-  // fetches and array of arrays of transactions for the address
-  // Note : This API endpoint returns a maximum of 10,000 records only.
+  /**
+   * fetches an array of transactions for the given address
+   * @param address address of user/contract to fetch transactions for
+   * @issue the API endpoint returns a maximum of 10,000 records only
+   */
   const getTransactionsOfAddress = async (address: string) => {
     try {
       setLoading(true);
@@ -125,7 +126,7 @@ const Dashboard: NextPage = ({
   };
 
   /**
-   *
+   * attempts to fetch the offset status of one transaction
    * @param address address of transaction owner
    * @param nonce nonce of transaction
    * @returns true/false (wether the transaction has been offset)
@@ -153,6 +154,7 @@ const Dashboard: NextPage = ({
         signer
       );
 
+      // get offset status of for the specified address for its specified nonce
       const offsetStatus = await co.nonceStatuses(
         address,
         ethers.utils.parseEther(nonce)
@@ -164,6 +166,10 @@ const Dashboard: NextPage = ({
     }
   };
 
+  /**
+   * calculates overall gas used and stores it in React state
+   * @param transactions an array of unformatted transactions
+   */
   const calculateOverallGas = (transactions: ifcTransaction[]) => {
     let overallGas: number = 0;
     transactions?.forEach((transaction) => {
@@ -172,6 +178,10 @@ const Dashboard: NextPage = ({
     setOverallGas(overallGas);
   };
 
+  /**
+   * calculates the overall footprint (based on transaction number) and stores it in React state
+   * @param transactions an array of unformatted transactions
+   */
   const calculateOverallFootprint = (transactions: ifcTransaction[]) => {
     const overallFootprint: number = transactions?.length * 0.00036; // 0.00000036 TCO2 or 0.00036 kg per transaction
     setOverallEmmissions(overallFootprint);
