@@ -132,6 +132,34 @@ const Dashboard: NextPage = ({
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
               {/* Replace with your content */}
               <div className="px-4 py-8 sm:px-0">
+                {/* show overall gas and emmissions stats */}
+                {overallGas || overallEmmissions ? (
+                  <div className="mb-6">
+                    <dl className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+                      <div className="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
+                        <dt className="text-sm font-medium text-gray-500 truncate">
+                          Overall Gas Used
+                        </dt>
+                        <dd className="mt-1 text-3xl font-semibold text-gray-900">
+                          {Intl.NumberFormat("en-US").format(overallGas) + " "}
+                          wei
+                        </dd>
+                      </div>
+                      <div className="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
+                        <dt className="text-sm font-medium text-gray-500 truncate">
+                          Overall Emmissions
+                        </dt>
+                        <dd className="mt-1 text-3xl font-semibold text-gray-900">
+                          {overallEmmissions} kg
+                        </dd>
+                      </div>
+                    </dl>
+                  </div>
+                ) : (
+                  ""
+                )}
+
+                {/* show transactions table */}
                 {transactions ? (
                   <div className="flex flex-col">
                     <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
