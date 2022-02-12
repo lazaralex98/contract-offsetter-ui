@@ -104,7 +104,6 @@ const Dashboard: NextPage = ({
             wallet,
             transaction.nonce
           );
-          console.log("offsetStatus", offsetStatus);
 
           const formattedTransaction: ifcFormattedTransaction = {
             hash: transaction.hash,
