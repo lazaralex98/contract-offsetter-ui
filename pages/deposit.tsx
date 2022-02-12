@@ -159,7 +159,6 @@ const Deposit: NextPage = ({
       // TODO some issue where this re-runs infinitely :(
       const DepositableTokenTypes: ifcTokenType[] =
         await fetchDepositableTokenTypes();
-      return;
 
       if (!DepositableTokenTypes) {
         throw new Error("No token types available.");
@@ -202,7 +201,7 @@ const Deposit: NextPage = ({
 
   useEffect(() => {
     fetchBalances();
-  }, []);
+  }, [wallet]);
 
   if (loading) {
     return <Loader />;
