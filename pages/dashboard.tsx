@@ -87,7 +87,7 @@ const Dashboard: NextPage = ({
    * @param address address of user/contract to fetch transactions for
    * @issue the API endpoint returns a maximum of 10,000 records only
    */
-  const getTransactionsOfAddress = async (address: string) => {
+  const fetchTransactionsOfAddress = async (address: string) => {
     try {
       setLoading(true);
       const response = await fetch(
@@ -187,9 +187,43 @@ const Dashboard: NextPage = ({
     setOverallEmmissions(overallFootprint);
   };
 
-  const offsetAll = async () => {
+  const offsetAll = async (tco2Address: string) => {
     // TODO offset all transactions
-    console.log("OFFSET");
+    try {
+      if (!wallet) {
+        throw new Error("Connect your wallet first.");
+      }
+
+      // @ts-ignore
+      const { ethereum } = window;
+      if (!ethereum) {
+        throw new Error("You need Metamask.");
+      }
+
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+
+      // get portal to ContractOffsetter
+      // @ts-ignore
+      const co: ContractOffsetter = new ethers.Contract(
+        process.env.NEXT_PUBLIC_CONTRACT_OFFSETTER_ADDRESS_MUMBAI || "",
+        coAbi.abi,
+        signer
+      );
+
+      // get offset status of for the specified address for its specified nonce
+      const offsetTxn = await co.offset(
+        tco2Address,
+        ethers.utils.parseEther(String(overallEmmissions / 1000)),
+        wallet,
+        [1, 2] // TODO needs to be an array of BigNumberish
+      );
+      await offsetTxn.wait();
+
+      fetchTransactionsOfAddress(wallet);
+    } catch (error: any) {
+      console.error("error when fetching offset status", error);
+    }
   };
 
   return (
@@ -358,7 +392,7 @@ const Dashboard: NextPage = ({
                       type="button"
                       className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                       onClick={async () => {
-                        await getTransactionsOfAddress(wallet);
+                        await fetchTransactionsOfAddress(wallet);
                       }}
                     >
                       Load My Transactions
