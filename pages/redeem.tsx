@@ -16,14 +16,6 @@ const Redeem: NextPage = ({
   connectWallet,
   loading,
 }: ifcRedeemProps) => {
-  if (loading) {
-    return <Loader />;
-  }
-
-  if (!wallet) {
-    return <ConnectWalletAlert connectWallet={connectWallet} />;
-  }
-
   const navigation = [
     { name: "Offset", href: "/dashboard", current: false },
     { name: "Deposit", href: "/deposit", current: false },
@@ -37,6 +29,14 @@ const Redeem: NextPage = ({
     },
     { name: "Disconnect", href: "/disconnect" },
   ];
+
+  if (loading) {
+    return <Loader />;
+  }
+
+  if (!wallet) {
+    return <ConnectWalletAlert connectWallet={connectWallet} />;
+  }
 
   return (
     <>

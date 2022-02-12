@@ -43,14 +43,6 @@ const Deposit: NextPage = ({
   loading,
   setLoading,
 }: ifcDepositProps) => {
-  if (loading) {
-    return <Loader />;
-  }
-
-  if (!wallet) {
-    return <ConnectWalletAlert connectWallet={connectWallet} />;
-  }
-
   const navigation = [
     { name: "Offset", href: "/dashboard", current: false },
     { name: "Deposit", href: "/deposit", current: true },
@@ -211,6 +203,14 @@ const Deposit: NextPage = ({
   useEffect(() => {
     fetchBalances();
   }, []);
+
+  if (loading) {
+    return <Loader />;
+  }
+
+  if (!wallet) {
+    return <ConnectWalletAlert connectWallet={connectWallet} />;
+  }
 
   return (
     <>

@@ -60,14 +60,6 @@ const Dashboard: NextPage = ({
   const [overallGas, setOverallGas] = useState<number>(0);
   const [overallEmmissions, setOverallEmmissions] = useState<number>(0);
 
-  if (loading) {
-    return <Loader />;
-  }
-
-  if (!wallet) {
-    return <ConnectWalletAlert connectWallet={connectWallet} />;
-  }
-
   const navigation = [
     { name: "Dashboard", href: "/dashboard", current: true },
     { name: "Deposit", href: "/deposit", current: false },
@@ -229,6 +221,14 @@ const Dashboard: NextPage = ({
       console.error("error when fetching offset status", error);
     }
   };
+
+  if (loading) {
+    return <Loader />;
+  }
+
+  if (!wallet) {
+    return <ConnectWalletAlert connectWallet={connectWallet} />;
+  }
 
   return (
     <>

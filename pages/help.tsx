@@ -12,14 +12,6 @@ interface ifcHelpProps {
 // TODO make page
 // @ts-ignore some type props BS i don't have the time to look into right now
 const Help: NextPage = ({ wallet, connectWallet, loading }: ifcHelpProps) => {
-  if (loading) {
-    return <Loader />;
-  }
-
-  if (!wallet) {
-    return <ConnectWalletAlert connectWallet={connectWallet} />;
-  }
-
   const navigation = [
     { name: "Offset", href: "/dashboard", current: false },
     { name: "Deposit", href: "/deposit", current: false },
@@ -33,6 +25,14 @@ const Help: NextPage = ({ wallet, connectWallet, loading }: ifcHelpProps) => {
     },
     { name: "Disconnect", href: "/disconnect" },
   ];
+
+  if (loading) {
+    return <Loader />;
+  }
+
+  if (!wallet) {
+    return <ConnectWalletAlert connectWallet={connectWallet} />;
+  }
 
   // TODO when you're done with the dapp, make content explaining how to use it
 
