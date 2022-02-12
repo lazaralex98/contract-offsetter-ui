@@ -94,9 +94,6 @@ const Dashboard: NextPage = ({
   // TODO prepare transactions such that you have: overall_emmissions and offset_status (for each transaction)
   const calculateOverallGas = (transactions: ifcTransaction[]) => {
     let overallGas: number = 0;
-    if (!transactions) {
-      console.log("AAaaaaa");
-    }
     transactions?.forEach((transaction) => {
       overallGas += parseInt(transaction.gas);
     });
