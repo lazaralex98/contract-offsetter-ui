@@ -183,7 +183,17 @@ const Deposit: NextPage = ({
           return { ...tokenType, balance };
         })
       );
-      setBalances(balances);
+      setBalances(
+        balances.sort((a, b) => {
+          if (a.symbol < b.symbol) {
+            return -1;
+          }
+          if (a.symbol > b.symbol) {
+            return 1;
+          }
+          return 0;
+        })
+      );
     } catch (error: any) {
       console.error("error when fetching balances", error);
       toast.error(error.message, toastOptions);
@@ -282,23 +292,13 @@ const Deposit: NextPage = ({
                             autoComplete="token"
                             className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                           >
-                            {balances
-                              ?.sort((a, b) => {
-                                if (a.symbol < b.symbol) {
-                                  return -1;
-                                }
-                                if (a.symbol > b.symbol) {
-                                  return 1;
-                                }
-                                return 0;
-                              })
-                              .map((token) => {
-                                return (
-                                  <option value={token.address}>
-                                    {token.symbol}
-                                  </option>
-                                );
-                              })}
+                            {balances?.map((token) => {
+                              return (
+                                <option value={token.address}>
+                                  {token.symbol}
+                                </option>
+                              );
+                            })}
                           </select>
                         </div>
                       </div>
@@ -358,15 +358,6 @@ const Deposit: NextPage = ({
                             <tbody>
                               {balances
                                 .filter((token) => token.balance != "0.0")
-                                .sort((a, b) => {
-                                  if (a.symbol < b.symbol) {
-                                    return -1;
-                                  }
-                                  if (a.symbol > b.symbol) {
-                                    return 1;
-                                  }
-                                  return 0;
-                                })
                                 .map((token, index) => (
                                   <tr
                                     key={token.address}
