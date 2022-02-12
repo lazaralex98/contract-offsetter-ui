@@ -71,7 +71,7 @@ const Dashboard: NextPage = ({
   }
 
   const navigation = [
-    { name: "Offset", href: "/dashboard", current: true },
+    { name: "Dashboard", href: "/dashboard", current: true },
     { name: "Deposit", href: "/deposit", current: false },
     { name: "Redeem", href: "/redeem", current: false },
     { name: "Help", href: "/help", current: false },
