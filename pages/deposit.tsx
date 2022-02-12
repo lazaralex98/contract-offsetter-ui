@@ -21,6 +21,21 @@ interface ifcDepositProps {
   setLoading: Function;
 }
 
+interface ifcTokenType {
+  __typename: string;
+  address: string;
+  name: string;
+  symbol: string;
+}
+
+interface ifcBalance {
+  __typename: string;
+  address: string;
+  name: string;
+  symbol: string;
+  balance: string;
+}
+
 // @ts-ignore some type props BS i don't have the time to look into right now
 const Deposit: NextPage = ({
   wallet,
@@ -50,10 +65,13 @@ const Deposit: NextPage = ({
     { name: "Disconnect", href: "/disconnect" },
   ];
 
+  // these are for the form
   const [amount, setAmount] = useState<string>("1.0");
   const [token, setToken] = useState<string>("BCT");
-  const [TCO2Address, setTCO2Address] = useState<string>(""); // this is for the form
-  const [DepositableTokenTypes, setDepositableTokenTypes] = useState<any>(); // this is from subgraph
+  const [TCO2Address, setTCO2Address] = useState<string>("");
+
+  // this is for stats
+  const [balances, setBalances] = useState<ifcBalance[] | null>(null);
 
   const handleDeposit = async () => {
     try {
@@ -122,15 +140,38 @@ const Deposit: NextPage = ({
     }
   };
 
-  const fetchBalances = () => {
+  const fetchDepositableTokenTypes = async () => {
+    const response = await fetch(`/api/getAllTCO2Types`);
+    const data: any = await response.json();
+
+    // preparing tokens to check/display in an easily formattable way
+    const tokensToCheck = [
+      ...data,
+      {
+        __typename: "BaseCarbonTonne",
+        address: process.env.NEXT_PUBLIC_BCT_ADDRESS_MUMBAI,
+        name: "Toucan Protocol: Base Carbon Tonne",
+        symbol: "BCT",
+      },
+    ];
+    return tokensToCheck;
+  };
+
+  const fetchBalances = async () => {
     try {
       if (!wallet) {
         throw new Error("Connect your wallet first.");
       }
+      setLoading(true);
+
+      // TODO some issue where this re-runs infinitely :(
+      const DepositableTokenTypes: ifcTokenType[] =
+        await fetchDepositableTokenTypes();
+      return;
+
       if (!DepositableTokenTypes) {
         throw new Error("No token types available.");
       }
-      setLoading(true);
 
       // @ts-ignore
       const { ethereum } = window;
@@ -149,7 +190,16 @@ const Deposit: NextPage = ({
         signer
       );
 
-      co.balances(wallet, TCO2Address);
+      const balances = await Promise.all(
+        DepositableTokenTypes.map(async (tokenType) => {
+          const balance = ethers.utils.formatEther(
+            await co.balances(wallet, tokenType.address)
+          );
+          return { ...tokenType, balance };
+        })
+      );
+      console.log("balances", balances);
+      setBalances(balances);
     } catch (error: any) {
       console.error("error when fetching balances", error);
       toast.error(error.message, toastOptions);
@@ -158,28 +208,10 @@ const Deposit: NextPage = ({
     }
   };
 
-  const fetchDepositableTokenTypes = async () => {
-    const response = await fetch(`/api/getAllTCO2Types`);
-    const data: any = await response.json();
-
-    // preparing tokens to check/display in an easily formattable way
-    const tokensToCheck = [
-      ...data,
-      {
-        __typename: "BaseCarbonTonne",
-        address: process.env.NEXT_PUBLIC_BCT_ADDRESS_MUMBAI,
-        name: "Toucan Protocol: Base Carbon Tonne",
-        symbol: "BCT",
-      },
-    ];
-    setDepositableTokenTypes(tokensToCheck);
-  };
-
   useEffect(() => {
-    fetchDepositableTokenTypes();
+    fetchBalances();
   }, []);
 
-  console.log("Depositable Token Types", DepositableTokenTypes);
   return (
     <>
       <Head>

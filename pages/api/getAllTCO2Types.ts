@@ -18,20 +18,19 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) {
-  client
-    .query({
-      query: tokensQuery,
-    })
-    .then((data) => {
-      console.log("Subgraph data: ", data.data.tco2Tokens);
-      res.status(200).json(data.data.tco2Tokens);
-    })
-    .catch((err) => {
-      console.log("Error fetching data: ", err);
-      res.status(500).json(err);
-    });
+  const response = await client.query({
+    query: tokensQuery,
+  });
+
+  console.log(response);
+
+  if (response.networkStatus == 7) {
+    res.status(200).json(response.data.tco2Tokens);
+  } else {
+    res.status(500).json(response);
+  }
 }
