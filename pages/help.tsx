@@ -13,7 +13,7 @@ interface ifcHelpProps {
 // @ts-ignore some type props BS i don't have the time to look into right now
 const Help: NextPage = ({ wallet, connectWallet, loading }: ifcHelpProps) => {
   const navigation = [
-    { name: "Offset", href: "/dashboard", current: false },
+    { name: "Dashboard", href: "/dashboard", current: false },
     { name: "Deposit", href: "/deposit", current: false },
     { name: "Redeem", href: "/redeem", current: false },
     { name: "Help", href: "/help", current: true },
