@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { useState } from "react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import AppNavbar from "../components/AppNavbar";
 import { Loader } from "../components/Loader";
@@ -10,6 +11,7 @@ interface ifcDashboardProps {
   wallet: string;
   connectWallet: Function;
   loading: boolean;
+  setLoading: Function;
 }
 
 interface ifcTransaction {
@@ -38,7 +40,12 @@ const Dashboard: NextPage = ({
   wallet,
   connectWallet,
   loading,
+  setLoading,
 }: ifcDashboardProps) => {
+  const [transactions, setTransactions] = useState<ifcTransaction[] | null>(
+    null
+  );
+
   if (loading) {
     return <Loader />;
   }
@@ -85,14 +92,11 @@ const Dashboard: NextPage = ({
     { name: "Disconnect", href: "/disconnect" },
   ];
 
-  const [transactions, setTransactions] = useState<ifcTransaction[][] | null>(
-    null
-  );
-
   // fetches and array of arrays of transactions for the address
   // Note : This API endpoint returns a maximum of 10,000 records only.
   const getTransactionsOfAddress = async (address: string) => {
     try {
+      setLoading(true);
       const response = await fetch(
         `/api/getTransactionsOfAddress?address=${address}`
       );
@@ -102,8 +106,12 @@ const Dashboard: NextPage = ({
       setTransactions(data.data.result);
     } catch (error: any) {
       toast.error(error.message, toastOptions);
+    } finally {
+      setLoading(false);
     }
   };
+
+  console.log(transactions);
 
   return (
     <>
@@ -128,17 +136,99 @@ const Dashboard: NextPage = ({
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
               {/* Replace with your content */}
               <div className="px-4 py-8 sm:px-0">
-                <div className="border-4 border-dashed border-gray-200 rounded-lg h-96 flex justify-around items-center">
-                  <button
-                    type="button"
-                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    onClick={() => {
-                      getTransactionsOfAddress(wallet);
-                    }}
-                  >
-                    Load My Transactions
-                  </button>
-                </div>
+                {transactions ? (
+                  <div className="flex flex-col">
+                    <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                      <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                        <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                          <table className="min-w-full divide-y divide-gray-200">
+                            <thead className="bg-gray-50">
+                              <tr>
+                                <th
+                                  scope="col"
+                                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                >
+                                  Hash
+                                </th>
+                                <th
+                                  scope="col"
+                                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                >
+                                  Gas Used
+                                </th>
+                                <th
+                                  scope="col"
+                                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                >
+                                  Nonce
+                                </th>
+                                <th
+                                  scope="col"
+                                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                >
+                                  Status
+                                </th>
+                                <th scope="col" className="relative px-6 py-3">
+                                  <span className="sr-only">Edit</span>
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {transactions.map((transaction, index) => (
+                                <tr
+                                  key={transaction.hash}
+                                  className={
+                                    index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                                  }
+                                >
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                    <Link
+                                      href={`https://mumbai.polygonscan.com/tx/${transaction.hash}`}
+                                    >
+                                      <a className="text-indigo-600 hover:text-indigo-900">
+                                        {transaction.hash.substring(0, 15) +
+                                          "..."}
+                                      </a>
+                                    </Link>
+                                  </td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {transaction.gasUsed}
+                                  </td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {transaction.nonce}
+                                  </td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {transaction.txreceipt_status}
+                                  </td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <a
+                                      href="#"
+                                      className="text-indigo-600 hover:text-indigo-900"
+                                    >
+                                      Edit
+                                    </a>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="h-96 flex justify-around items-center">
+                    <button
+                      type="button"
+                      className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      onClick={() => {
+                        getTransactionsOfAddress(wallet);
+                      }}
+                    >
+                      Load My Transactions
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* /End replace */}
