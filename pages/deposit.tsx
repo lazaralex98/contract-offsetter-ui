@@ -52,7 +52,8 @@ const Deposit: NextPage = ({
 
   const [amount, setAmount] = useState<string>("1.0");
   const [token, setToken] = useState<string>("BCT");
-  const [TCO2Address, setTCO2Address] = useState<string>("");
+  const [TCO2Address, setTCO2Address] = useState<string>(""); // this is for the form
+  const [DepositableTokenTypes, setDepositableTokenTypes] = useState<any>(); // this is from subgraph
 
   const handleDeposit = async () => {
     try {
@@ -121,17 +122,13 @@ const Deposit: NextPage = ({
     }
   };
 
-  // TODO I need a function that checks ALL tokens the contract actually holds
-  // and than, for each token,  it checks the balance of the user within the contract
-  // and lastly it returns an array of all these addresses and balances for these tokens
-  // so that I may render a view of all this user's balances.
-  //
-  // It seems to me that I have to simply loop over ALL known tokens and ‘manually’ check each token’s balance.
-  // That seems resource intensive to me. Also, I do not have a list of all TCO2s.
   const fetchBalances = () => {
     try {
       if (!wallet) {
         throw new Error("Connect your wallet first.");
+      }
+      if (!DepositableTokenTypes) {
+        throw new Error("No token types available.");
       }
       setLoading(true);
 
@@ -161,20 +158,28 @@ const Deposit: NextPage = ({
     }
   };
 
-  const [TCO2Tokens, setTCO2Tokens] = useState();
-
-  const fetchTCO2Types = async () => {
+  const fetchDepositableTokenTypes = async () => {
     const response = await fetch(`/api/getAllTCO2Types`);
     const data: any = await response.json();
-    setTCO2Tokens(data);
+
+    // preparing tokens to check/display in an easily formattable way
+    const tokensToCheck = [
+      ...data,
+      {
+        __typename: "BaseCarbonTonne",
+        address: process.env.NEXT_PUBLIC_BCT_ADDRESS_MUMBAI,
+        name: "Toucan Protocol: Base Carbon Tonne",
+        symbol: "BCT",
+      },
+    ];
+    setDepositableTokenTypes(tokensToCheck);
   };
 
   useEffect(() => {
-    fetchTCO2Types();
+    fetchDepositableTokenTypes();
   }, []);
 
-  console.log("TCO2Tokens", TCO2Tokens);
-
+  console.log("Depositable Token Types", DepositableTokenTypes);
   return (
     <>
       <Head>
