@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import type { NextPage } from "next";
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import AppNavbar from "../components/AppNavbar";
 import { ContractOffsetter } from "../contract-utils/ContractOffsetter";
@@ -160,6 +160,20 @@ const Deposit: NextPage = ({
       setLoading(false);
     }
   };
+
+  const [TCO2Tokens, setTCO2Tokens] = useState();
+
+  const fetchTCO2Tokens = async () => {
+    const response = await fetch(`/api/getAllTCO2Tokens`);
+    const data: any = await response.json();
+    setTCO2Tokens(data);
+  };
+
+  useEffect(() => {
+    fetchTCO2Tokens();
+  }, []);
+
+  console.log("TCO2Tokens", TCO2Tokens);
 
   return (
     <>
