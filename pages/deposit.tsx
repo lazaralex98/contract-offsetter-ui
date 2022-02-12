@@ -60,8 +60,9 @@ const Deposit: NextPage = ({
 
   // these are for the form
   const [amount, setAmount] = useState<string>("1.0");
-  const [token, setToken] = useState<string>("BCT");
-  const [TCO2Address, setTCO2Address] = useState<string>("");
+  const [token, setToken] = useState<string>(
+    process.env.NEXT_PUBLIC_BCT_ADDRESS_MUMBAI || ""
+  );
 
   // this is for stats
   const [balances, setBalances] = useState<ifcBalance[] | null>(null);
@@ -72,12 +73,6 @@ const Deposit: NextPage = ({
         throw new Error("Connect your wallet first.");
       }
       setLoading(true);
-
-      if (token == "TCO2" && TCO2Address == "") {
-        throw new Error(
-          "To deposit a TCO2, you need to mention the address of the TCO2 you want deposited."
-        );
-      }
 
       // @ts-ignore
       const { ethereum } = window;
@@ -98,10 +93,10 @@ const Deposit: NextPage = ({
 
       // get portal to the token the user wants deposited (BCT or TCO2 for now)
       const tokenPortal = new ethers.Contract(
-        token == "TCO2"
-          ? TCO2Address
-          : process.env.NEXT_PUBLIC_BCT_ADDRESS_MUMBAI || "",
-        token == "TCO2" ? tco2Abi.abi : bctAbi.abi,
+        token,
+        token == process.env.NEXT_PUBLIC_BCT_ADDRESS_MUMBAI
+          ? bctAbi.abi
+          : tco2Abi.abi,
         signer
       );
 
@@ -112,9 +107,7 @@ const Deposit: NextPage = ({
 
       // we then deposit the amount of TCO2/BCT into the ContractOffsetter
       const depositTxn = await co.deposit(
-        token == "TCO2"
-          ? TCO2Address
-          : process.env.NEXT_PUBLIC_BCT_ADDRESS_MUMBAI || "",
+        token,
         ethers.utils.parseEther(amount),
         {
           gasLimit: 1200000,
@@ -190,10 +183,10 @@ const Deposit: NextPage = ({
           return { ...tokenType, balance };
         })
       );
-      const sortedBalances = balances.filter((token) => {
-        return token.balance != "0.0";
-      });
-      setBalances(sortedBalances);
+      // const sortedBalances = balances.filter((token) => {
+      //   return token.balance != "0.0";
+      // });
+      setBalances(balances);
     } catch (error: any) {
       console.error("error when fetching balances", error);
       toast.error(error.message, toastOptions);
@@ -292,38 +285,16 @@ const Deposit: NextPage = ({
                             autoComplete="token"
                             className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                           >
-                            <option value="BCT">BCT</option>
-                            <option value="TCO2">TCO2</option>
+                            {balances?.map((token) => {
+                              return (
+                                <option value={token.address}>
+                                  {token.symbol}
+                                </option>
+                              );
+                            })}
                           </select>
                         </div>
                       </div>
-
-                      {/* if TCO2, say address of TCO2 you want to deposit */}
-                      {token == "BCT" ? (
-                        ""
-                      ) : (
-                        <div className="sm:col-span-4">
-                          <label
-                            htmlFor="email"
-                            className="block text-sm font-medium text-gray-700"
-                          >
-                            TCO2 address
-                          </label>
-                          <div className="mt-1">
-                            <input
-                              onChange={(e) => {
-                                setTCO2Address(e.target.value);
-                              }}
-                              value={TCO2Address}
-                              id="tco2Address"
-                              name="tco2Address"
-                              type="text"
-                              autoComplete="tco2Address"
-                              className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                            />
-                          </div>
-                        </div>
-                      )}
                     </div>
                   </div>
                 </div>
