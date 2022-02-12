@@ -11,7 +11,7 @@ export default async function handler(
 ) {
   const fetchTransactionsOfAddress = async (address: string) => {
     let response = await fetch(
-      `https://api-testnet.polygonscan.com/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=asc&apikey=${process.env.POLYGONSCAN_API_KEY}`
+      `https://api-testnet.polygonscan.com/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${process.env.POLYGONSCAN_API_KEY}`
     );
     let data = await response.json();
     return data;
