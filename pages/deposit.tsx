@@ -183,9 +183,6 @@ const Deposit: NextPage = ({
           return { ...tokenType, balance };
         })
       );
-      // const sortedBalances = balances.filter((token) => {
-      //   return token.balance != "0.0";
-      // });
       setBalances(balances);
     } catch (error: any) {
       console.error("error when fetching balances", error);
@@ -349,33 +346,38 @@ const Deposit: NextPage = ({
                               </tr>
                             </thead>
                             <tbody>
-                              {balances.map((token, index) => (
-                                <tr
-                                  key={token.address}
-                                  className={
-                                    index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                                  }
-                                >
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    <Link
-                                      href={`https://mumbai.polygonscan.com/address/${token.address}`}
-                                    >
-                                      <a className="text-indigo-600 hover:text-indigo-900">
-                                        {token.address.substring(0, 15) + "..."}
-                                      </a>
-                                    </Link>
-                                  </td>
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {token.symbol}
-                                  </td>
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {token.name}
-                                  </td>
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {token.balance}
-                                  </td>
-                                </tr>
-                              ))}
+                              {balances
+                                .filter((token) => token.balance != "0.0")
+                                .map((token, index) => (
+                                  <tr
+                                    key={token.address}
+                                    className={
+                                      index % 2 === 0
+                                        ? "bg-white"
+                                        : "bg-gray-50"
+                                    }
+                                  >
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                      <Link
+                                        href={`https://mumbai.polygonscan.com/address/${token.address}`}
+                                      >
+                                        <a className="text-indigo-600 hover:text-indigo-900">
+                                          {token.address.substring(0, 15) +
+                                            "..."}
+                                        </a>
+                                      </Link>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                      {token.symbol}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                      {token.name}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                      {token.balance}
+                                    </td>
+                                  </tr>
+                                ))}
                             </tbody>
                           </table>
                         </div>
