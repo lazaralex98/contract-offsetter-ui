@@ -5,11 +5,11 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import AppNavbar from "../components/AppNavbar";
-import ConnectWalletAlert from "../components/connectWalletAlert";
 import { Loader } from "../components/Loader";
 import toastOptions from "../utils/toastOptions";
 import * as coAbi from "../contract-utils/ContractOffsetter.json";
 import { ContractOffsetter } from "../contract-utils/ContractOffsetter";
+import ConnectWalletAlert from "../components/ConnectWalletAlert";
 
 // TODO needs major cleanup
 
