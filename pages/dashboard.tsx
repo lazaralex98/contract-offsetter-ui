@@ -47,6 +47,7 @@ const Dashboard: NextPage = ({
     null
   );
   const [overallGas, setOverallGas] = useState<number>(0);
+  const [overallEmmissions, setOverallEmmissions] = useState<number>(0);
 
   if (loading) {
     return <Loader />;
@@ -82,6 +83,7 @@ const Dashboard: NextPage = ({
       if (data.message != "OK") throw new Error(data.message);
 
       calculateOverallGas(data.data.result);
+      calculateOverallFootprint(data.data.result);
 
       setTransactions(data.data.result);
     } catch (error: any) {
@@ -100,7 +102,12 @@ const Dashboard: NextPage = ({
     setOverallGas(overallGas);
   };
 
-  console.log("overall gas", overallGas);
+  const calculateOverallFootprint = (transactions: ifcTransaction[]) => {
+    const overallFootprint: number = transactions?.length * 0.00036; // 0.00000036 TCO2 or 0.00036 kg per transaction
+    setOverallEmmissions(overallFootprint);
+  };
+
+  console.log("overall emmissions (TCO2)", overallEmmissions);
 
   return (
     <>
