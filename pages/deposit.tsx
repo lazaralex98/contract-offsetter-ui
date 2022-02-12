@@ -151,7 +151,6 @@ const Deposit: NextPage = ({
       }
       setLoading(true);
 
-      // TODO some issue where this re-runs infinitely :(
       const DepositableTokenTypes: ifcTokenType[] =
         await fetchDepositableTokenTypes();
 
