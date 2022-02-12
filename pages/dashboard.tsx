@@ -111,7 +111,7 @@ const Dashboard: NextPage = ({
     }
   };
 
-  console.log(transactions);
+  // TODO prepare transactions such that you have: overall_emmissions and offset_status (for each transaction)
 
   return (
     <>
