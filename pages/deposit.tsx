@@ -163,14 +163,14 @@ const Deposit: NextPage = ({
 
   const [TCO2Tokens, setTCO2Tokens] = useState();
 
-  const fetchTCO2Tokens = async () => {
-    const response = await fetch(`/api/getAllTCO2Tokens`);
+  const fetchTCO2Types = async () => {
+    const response = await fetch(`/api/getAllTCO2Types`);
     const data: any = await response.json();
     setTCO2Tokens(data);
   };
 
   useEffect(() => {
-    fetchTCO2Tokens();
+    fetchTCO2Types();
   }, []);
 
   console.log("TCO2Tokens", TCO2Tokens);
