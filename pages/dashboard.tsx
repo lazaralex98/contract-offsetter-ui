@@ -1,12 +1,36 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import { useState } from "react";
+import { toast } from "react-toastify";
 import AppNavbar from "../components/AppNavbar";
 import { Loader } from "../components/Loader";
+import toastOptions from "../utils/toastOptions";
 
 interface ifcDashboardProps {
   wallet: string;
   connectWallet: Function;
   loading: boolean;
+}
+
+interface ifcTransaction {
+  blockHash: string;
+  blockNumber: string;
+  confirmations: string;
+  contractAddress: string;
+  cumulativeGasUsed: string;
+  from: string;
+  gas: string;
+  gasPrice: string;
+  gasUsed: string;
+  hash: string;
+  input: string;
+  isError: string;
+  nonce: string;
+  timeStamp: string;
+  to: string;
+  transactionIndex: string;
+  txreceipt_status: string;
+  value: string;
 }
 
 // @ts-ignore some type props BS i don't have the time to look into right now
@@ -61,7 +85,25 @@ const Dashboard: NextPage = ({
     { name: "Disconnect", href: "/disconnect" },
   ];
 
-  // TODO how do I get someone's ALL transactions?
+  const [transactions, setTransactions] = useState<ifcTransaction[][] | null>(
+    null
+  );
+
+  // fetches and array of arrays of transactions for the address
+  // Note : This API endpoint returns a maximum of 10,000 records only.
+  const getTransactionsOfAddress = async (address: string) => {
+    try {
+      const response = await fetch(
+        `/api/getTransactionsOfAddress?address=${address}`
+      );
+      const data: any = await response.json();
+      if (data.message != "OK") throw new Error(data.message);
+
+      setTransactions(data.data.result);
+    } catch (error: any) {
+      toast.error(error.message, toastOptions);
+    }
+  };
 
   return (
     <>
@@ -85,6 +127,19 @@ const Dashboard: NextPage = ({
           <main>
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
               {/* Replace with your content */}
+              <div className="px-4 py-8 sm:px-0">
+                <div className="border-4 border-dashed border-gray-200 rounded-lg h-96 flex justify-around items-center">
+                  <button
+                    type="button"
+                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    onClick={() => {
+                      getTransactionsOfAddress(wallet);
+                    }}
+                  >
+                    Load My Transactions
+                  </button>
+                </div>
+              </div>
 
               {/* /End replace */}
             </div>
