@@ -45,6 +45,7 @@ const Dashboard: NextPage = ({
   const [transactions, setTransactions] = useState<ifcTransaction[] | null>(
     null
   );
+  const [overallGas, setOverallGas] = useState<number>(0);
 
   if (loading) {
     return <Loader />;
@@ -103,6 +104,8 @@ const Dashboard: NextPage = ({
       const data: any = await response.json();
       if (data.message != "OK") throw new Error(data.message);
 
+      calculateOverallGas(data.data.result);
+
       setTransactions(data.data.result);
     } catch (error: any) {
       toast.error(error.message, toastOptions);
@@ -112,6 +115,18 @@ const Dashboard: NextPage = ({
   };
 
   // TODO prepare transactions such that you have: overall_emmissions and offset_status (for each transaction)
+  const calculateOverallGas = (transactions: ifcTransaction[]) => {
+    let overallGas: number = 0;
+    if (!transactions) {
+      console.log("AAaaaaa");
+    }
+    transactions?.forEach((transaction) => {
+      overallGas += parseInt(transaction.gas);
+    });
+    setOverallGas(overallGas);
+  };
+
+  console.log("overall gas", overallGas);
 
   return (
     <>
