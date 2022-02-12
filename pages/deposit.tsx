@@ -123,6 +123,7 @@ const Deposit: NextPage = ({
       toast.error(error.message, toastOptions);
     } finally {
       setLoading(false);
+      fetchBalances();
     }
   };
 
