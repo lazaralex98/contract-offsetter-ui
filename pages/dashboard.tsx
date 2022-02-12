@@ -212,7 +212,7 @@ const Dashboard: NextPage = ({
         tco2Address,
         ethers.utils.parseEther(String(overallEmmissions / 1000)),
         wallet,
-        noncesBigNumberish || [] // TODO needs to be an array of BigNumberish
+        noncesBigNumberish || []
       );
       await offsetTxn.wait();
 
