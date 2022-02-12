@@ -9,7 +9,7 @@ interface ifcHelpProps {
   connectWallet: Function;
   loading: boolean;
 }
-
+// TODO make page
 // @ts-ignore some type props BS i don't have the time to look into right now
 const Help: NextPage = ({ wallet, connectWallet, loading }: ifcHelpProps) => {
   if (loading) {

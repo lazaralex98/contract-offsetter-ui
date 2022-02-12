@@ -9,7 +9,7 @@ interface ifcRedeemProps {
   connectWallet: Function;
   loading: boolean;
 }
-
+// TODO make page
 // @ts-ignore some type props BS i don't have the time to look into right now
 const Redeem: NextPage = ({
   wallet,
