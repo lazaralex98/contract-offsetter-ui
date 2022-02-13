@@ -85,7 +85,9 @@ function MyApp({ Component, pageProps }: AppProps) {
   };
 
   useEffect(() => {
-    getAndStoreBalances();
+    if (wallet) {
+      getAndStoreBalances();
+    }
   }, [wallet]);
 
   return (
