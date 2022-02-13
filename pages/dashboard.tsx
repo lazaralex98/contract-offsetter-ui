@@ -11,35 +11,9 @@ import * as coAbi from "../contract-utils/ContractOffsetter.json";
 import { ContractOffsetter } from "../contract-utils/ContractOffsetter";
 import ConnectWalletAlert from "../components/ConnectWalletAlert";
 import ifcPropsFromApp from "../utils/ifcPropsFromApp";
-
-interface ifcTransaction {
-  blockHash: string;
-  blockNumber: string;
-  confirmations: string;
-  contractAddress: string;
-  cumulativeGasUsed: string;
-  from: string;
-  gas: string;
-  gasPrice: string;
-  gasUsed: string;
-  hash: string;
-  input: string;
-  isError: string;
-  nonce: string;
-  timeStamp: string;
-  to: string;
-  transactionIndex: string;
-  txreceipt_status: string;
-  value: string;
-}
-
-interface ifcFormattedTransaction {
-  hash: string;
-  gasUsed: string;
-  nonce: string;
-  transactionStatus: string;
-  offsetStatus: boolean | undefined;
-}
+import fetchOffsetStatus from "../utils/fetchOffsetStatus";
+import fetchAndFormatTransactions from "../utils/fetchAndFormatTransactions";
+import { ifcFormattedTransaction } from "../utils/ifcTransaction";
 
 // @ts-ignore some type props BS i don't have the time to look into right now
 const Dashboard: NextPage = ({
@@ -79,33 +53,10 @@ const Dashboard: NextPage = ({
    * @param address address of user/contract to fetch transactions for
    * @issue TODO NOTE WARNING the API endpoint returns a maximum of 10,000 records only
    */
-  const fetchTransactionsOfAddress = async (address: string) => {
+  const getAndStoreTransactions = async (address: string) => {
     try {
       setLoading(true);
-      const response = await fetch(
-        `/api/getTransactionsOfAddress?address=${address}`
-      );
-      const data: any = await response.json();
-      if (data.message != "OK") throw new Error(data.message);
-
-      const formattedTransactions: ifcFormattedTransaction[] =
-        await Promise.all(
-          data.data.result.map(async (transaction: ifcTransaction) => {
-            const offsetStatus = await fetchOffsetStatus(
-              wallet,
-              transaction.nonce
-            );
-
-            const formattedTransaction: ifcFormattedTransaction = {
-              hash: transaction.hash,
-              gasUsed: transaction.gasUsed,
-              nonce: transaction.nonce,
-              transactionStatus: transaction.txreceipt_status,
-              offsetStatus: offsetStatus,
-            };
-            return formattedTransaction;
-          })
-        );
+      const formattedTransactions = await fetchAndFormatTransactions(address);
 
       calculateOverallGas(formattedTransactions);
       calculateOverallFootprint(formattedTransactions);
@@ -115,47 +66,6 @@ const Dashboard: NextPage = ({
       toast.error(error.message, toastOptions);
     } finally {
       setLoading(false);
-    }
-  };
-
-  /**
-   * attempts to fetch the offset status of one transaction
-   * @param address address of transaction owner
-   * @param nonce nonce of transaction
-   * @returns true/false (wether the transaction has been offset)
-   */
-  const fetchOffsetStatus = async (address: string, nonce: string) => {
-    try {
-      if (!wallet) {
-        throw new Error("Connect your wallet first.");
-      }
-
-      // @ts-ignore
-      const { ethereum } = window;
-      if (!ethereum) {
-        throw new Error("You need Metamask.");
-      }
-
-      const provider = new ethers.providers.Web3Provider(ethereum);
-      const signer = provider.getSigner();
-
-      // get portal to ContractOffsetter
-      // @ts-ignore
-      const co: ContractOffsetter = new ethers.Contract(
-        process.env.NEXT_PUBLIC_CONTRACT_OFFSETTER_ADDRESS_MUMBAI || "",
-        coAbi.abi,
-        signer
-      );
-
-      // get offset status of for the specified address for its specified nonce
-      const offsetStatus = await co.nonceStatuses(
-        address,
-        ethers.utils.parseEther(nonce)
-      );
-
-      return offsetStatus;
-    } catch (error: any) {
-      console.error("error when fetching offset status", error);
     }
   };
 
@@ -198,7 +108,7 @@ const Dashboard: NextPage = ({
   };
 
   // TODO there still is an issue when attempting to offset VERY small numbers like: 3.6e-7
-  const offsetAll = async () => {
+  const handleOffset = async () => {
     try {
       if (!wallet) {
         throw new Error("Connect your wallet first.");
@@ -261,7 +171,7 @@ const Dashboard: NextPage = ({
       toast.error(error.message, toastOptions);
     } finally {
       setLoading(false);
-      fetchTransactionsOfAddress(wallet);
+      getAndStoreTransactions(wallet);
     }
   };
 
@@ -339,7 +249,7 @@ const Dashboard: NextPage = ({
                   </select>
                   <button
                     onClick={() => {
-                      offsetAll();
+                      handleOffset();
                     }}
                     type="button"
                     className="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -482,7 +392,7 @@ const Dashboard: NextPage = ({
                       type="button"
                       className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                       onClick={async () => {
-                        await fetchTransactionsOfAddress(wallet);
+                        await getAndStoreTransactions(wallet);
                       }}
                     >
                       Load My Transactions
