@@ -461,7 +461,13 @@ const Dashboard: NextPage = ({
                                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     {transaction.transactionStatus}
                                   </td>
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                  <td
+                                    className={`px-6 py-4 whitespace-nowrap text-sm text-gray-500 ${
+                                      transaction.offsetStatus
+                                        ? "text-green-600"
+                                        : "text-red-600 underline"
+                                    }`}
+                                  >
                                     {String(transaction.offsetStatus)}
                                   </td>
                                 </tr>
