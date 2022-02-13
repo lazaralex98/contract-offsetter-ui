@@ -3,7 +3,7 @@ import ifcBalance from "../utils/ifcBalance";
 
 const BalancesTable = ({ balances }: { balances: ifcBalance[] }) => {
   return (
-    <div>
+    <div className="mt-3">
       <h2 className="text-2xl font-bold leading-tight text-gray-900">
         Balances
       </h2>
