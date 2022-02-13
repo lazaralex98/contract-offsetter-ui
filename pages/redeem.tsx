@@ -16,8 +16,6 @@ import * as bctAbi from "../contract-utils/BaseCarbonTonne.json";
 import * as tco2Abi from "../contract-utils/ToucanCarbonOffsets.json";
 import ifcPropsFromApp from "../utils/ifcPropsFromApp";
 
-// TODO you could separate this interface
-
 // TODO make page
 // @ts-ignore some type props BS i don't have the time to look into right now
 const Redeem: NextPage = ({
