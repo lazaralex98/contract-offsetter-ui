@@ -179,6 +179,7 @@ const Dashboard: NextPage = ({
     transactions: ifcFormattedTransaction[]
   ) => {
     const notOffsetTransaction = transactions.filter(
+      // filter out transactions that have been offset already
       (transaction) => !transaction.offsetStatus
     );
 
@@ -186,11 +187,9 @@ const Dashboard: NextPage = ({
     // get the overall footprint in kg
     const overallFootprint: number = notOffsetTransaction?.length * 0.00036;
     // get overall footprint in tonnes
-    // TODO WARNING WATCH OUT there could be an issue with super small like 3.6000000000000005e-7
     const overallFootprintInTonnes = String(
-      Math.round(((overallFootprint / 1000) * 10000000000) / 10000000000)
+      Math.round((overallFootprint / 1000) * 100000000) / 100000000
     ).substring(0, 10);
-    console.log("real emmissionsInTonnes", overallFootprintInTonnes);
 
     // set overall footprint (for display) in kg
     setOverallEmmissions(overallFootprint);
@@ -198,6 +197,7 @@ const Dashboard: NextPage = ({
     setEmmissionsInTonnes(overallFootprintInTonnes);
   };
 
+  // TODO there still is an issue when attempting to offset VERY small numbers like: 3.6e-7
   const offsetAll = async () => {
     try {
       if (!wallet) {
@@ -215,6 +215,10 @@ const Dashboard: NextPage = ({
         throw new Error("No transactions were loaded.");
       }
 
+      if (token == "") {
+        throw new Error("You forgot to pick a new token.");
+      }
+
       if (emmissionsInTonnes == "0") {
         throw new Error("You need to accumulate more CO2 to offfset.");
       }
@@ -230,9 +234,16 @@ const Dashboard: NextPage = ({
         signer
       );
 
-      const noncesBigNumberish = transactions.map((transaction) => {
-        return ethers.utils.parseEther(transaction.nonce);
-      });
+      const noncesBigNumberish = transactions
+        .filter(
+          // filter out transactions that have been offset already
+          (transaction) => !transaction.offsetStatus
+        )
+        .map((transaction) => {
+          return ethers.utils.parseEther(transaction.nonce);
+        });
+
+      console.log("nonces to offset", noncesBigNumberish);
 
       // get offset status of for the specified address for its specified nonce
       const offsetTxn = await co.offset(
@@ -243,7 +254,10 @@ const Dashboard: NextPage = ({
       );
       await offsetTxn.wait();
       console.log("offset hash", offsetTxn.hash);
-      toast.success(`You've successfully offset all your footprint 🌳`);
+      toast.success(
+        `You've successfully offset all your footprint 🌳`,
+        toastOptions
+      );
     } catch (error: any) {
       console.error("error when fetching offset status", error);
       toast.error(error.message, toastOptions);
@@ -359,7 +373,7 @@ const Dashboard: NextPage = ({
                       </div>
                       <div className="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
                         <dt className="text-sm font-medium text-gray-500 truncate">
-                          Not Offset CO2 Emmissions
+                          CO2 Left To Offset
                         </dt>
                         <dd className="mt-1 text-3xl font-semibold text-gray-900">
                           {overallEmmissions} kg
