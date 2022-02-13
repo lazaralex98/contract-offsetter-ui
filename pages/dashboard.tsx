@@ -186,12 +186,11 @@ const Dashboard: NextPage = ({
     // get the overall footprint in kg
     const overallFootprint: number = notOffsetTransaction?.length * 0.00036;
     // get overall footprint in tonnes
-    console.log("real emmissionsInTonnes", overallFootprint / 1000);
-    // TODO issue when number is super small like 3.6000000000000005e-7
-    const overallFootprintInTonnes = String(overallFootprint / 1000).substring(
-      0,
-      10
-    );
+    // TODO WARNING WATCH OUT there could be an issue with super small like 3.6000000000000005e-7
+    const overallFootprintInTonnes = String(
+      Math.round(((overallFootprint / 1000) * 10000000000) / 10000000000)
+    ).substring(0, 10);
+    console.log("real emmissionsInTonnes", overallFootprintInTonnes);
 
     // set overall footprint (for display) in kg
     setOverallEmmissions(overallFootprint);
@@ -217,7 +216,7 @@ const Dashboard: NextPage = ({
       }
 
       if (emmissionsInTonnes == "0") {
-        throw new Error("Nothing to offset");
+        throw new Error("You need to accumulate more CO2 to offfset.");
       }
 
       const provider = new ethers.providers.Web3Provider(ethereum);
