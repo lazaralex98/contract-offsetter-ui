@@ -105,33 +105,19 @@ const Redeem: NextPage = ({
         signer
       );
 
-      // get portal to the token the user wants deposited (BCT or TCO2 for now)
-      const tokenPortal = new ethers.Contract(
-        token,
-        token == process.env.NEXT_PUBLIC_BCT_ADDRESS_MUMBAI
-          ? bctAbi.abi
-          : tco2Abi.abi,
-        signer
-      );
-
-      // token needs to approve ContractOffsetter first
-      await (
-        await tokenPortal.approve(co.address, ethers.utils.parseEther(amount))
-      ).wait();
-
       // we then deposit the amount of TCO2/BCT into the ContractOffsetter
-      const depositTxn = await co.deposit(
+      const redeemalTxn = await co.redeemBCT(
         token,
         ethers.utils.parseEther(amount),
         {
           gasLimit: 1200000,
         }
       );
-      await depositTxn.wait();
+      await redeemalTxn.wait();
 
-      console.log("deposit hash", depositTxn.hash);
+      console.log("redeemal hash", redeemalTxn.hash);
 
-      toast(`You deposited ${amount} TCO2s`, toastOptions);
+      toast(`You redeemed ${amount} BCT for TCO2s`, toastOptions);
     } catch (error: any) {
       console.error("error when depositing", error);
       toast.error(error.message, toastOptions);
