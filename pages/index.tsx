@@ -7,6 +7,7 @@ import { MenuIcon, XIcon } from "@heroicons/react/outline";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Loader } from "../components/Loader";
+import ifcPropsFromApp from "../utils/ifcPropsFromApp";
 
 const navigation = [
   {
@@ -19,14 +20,12 @@ const navigation = [
   },
 ];
 
-interface ifcHomeProps {
-  wallet: string;
-  connectWallet: Function;
-  loading: boolean;
-}
-
 // @ts-ignore some type props BS i don't have the time to look into right now
-const Home: NextPage = ({ wallet, connectWallet, loading }: ifcHomeProps) => {
+const Home: NextPage = ({
+  wallet,
+  connectWallet,
+  loading,
+}: ifcPropsFromApp) => {
   if (wallet) {
     const router = useRouter();
     router.push("/dashboard");

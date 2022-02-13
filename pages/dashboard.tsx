@@ -10,13 +10,7 @@ import toastOptions from "../utils/toastOptions";
 import * as coAbi from "../contract-utils/ContractOffsetter.json";
 import { ContractOffsetter } from "../contract-utils/ContractOffsetter";
 import ConnectWalletAlert from "../components/ConnectWalletAlert";
-
-interface ifcDashboardProps {
-  wallet: string;
-  connectWallet: Function;
-  loading: boolean;
-  setLoading: Function;
-}
+import ifcPropsFromApp from "../utils/ifcPropsFromApp";
 
 interface ifcTransaction {
   blockHash: string;
@@ -53,7 +47,7 @@ const Dashboard: NextPage = ({
   connectWallet,
   loading,
   setLoading,
-}: ifcDashboardProps) => {
+}: ifcPropsFromApp) => {
   const [transactions, setTransactions] = useState<
     ifcFormattedTransaction[] | null
   >(null);

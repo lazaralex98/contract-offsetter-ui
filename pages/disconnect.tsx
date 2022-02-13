@@ -1,13 +1,10 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-
-interface ifcDisconnectProps {
-  disconnectWallet: Function;
-}
+import ifcPropsFromApp from "../utils/ifcPropsFromApp";
 
 // @ts-ignore some type props BS i don't have the time to look into right now
-const Disconnect: NextPage = ({ disconnectWallet }: ifcDisconnectProps) => {
+const Disconnect: NextPage = ({ disconnectWallet }: ifcPropsFromApp) => {
   disconnectWallet();
 
   return (

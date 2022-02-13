@@ -4,19 +4,15 @@ import { useRouter } from "next/router";
 import AppNavbar from "../../components/AppNavbar";
 import ConnectWalletAlert from "../../components/ConnectWalletAlert";
 import { Loader } from "../../components/Loader";
+import ifcPropsFromApp from "../../utils/ifcPropsFromApp";
 
-interface ifcOffsetProps {
-  wallet: string;
-  connectWallet: Function;
-  loading: boolean;
-}
 // TODO make page
 // @ts-ignore some type props BS i don't have the time to look into right now
 const Offset: NextPage = ({
   wallet,
   connectWallet,
   loading,
-}: ifcOffsetProps) => {
+}: ifcPropsFromApp) => {
   const router = useRouter();
   const { address } = router.query;
 

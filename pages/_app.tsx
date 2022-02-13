@@ -48,8 +48,8 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Component
         wallet={wallet}
         connectWallet={connectWallet}
-        loading={loading}
         disconnectWallet={disconnectWallet}
+        loading={loading}
         setLoading={setLoading}
         {...pageProps}
       />

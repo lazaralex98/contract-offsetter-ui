@@ -3,15 +3,15 @@ import Head from "next/head";
 import AppNavbar from "../components/AppNavbar";
 import ConnectWalletAlert from "../components/ConnectWalletAlert";
 import { Loader } from "../components/Loader";
+import ifcPropsFromApp from "../utils/ifcPropsFromApp";
 
-interface ifcHelpProps {
-  wallet: string;
-  connectWallet: Function;
-  loading: boolean;
-}
 // TODO make page
 // @ts-ignore some type props BS i don't have the time to look into right now
-const Help: NextPage = ({ wallet, connectWallet, loading }: ifcHelpProps) => {
+const Help: NextPage = ({
+  wallet,
+  connectWallet,
+  loading,
+}: ifcPropsFromApp) => {
   const navigation = [
     { name: "Dashboard", href: "/dashboard", current: false },
     { name: "Deposit", href: "/deposit", current: false },

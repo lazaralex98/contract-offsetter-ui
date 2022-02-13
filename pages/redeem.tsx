@@ -14,14 +14,10 @@ import toastOptions from "../utils/toastOptions";
 import * as coAbi from "../contract-utils/ContractOffsetter.json";
 import * as bctAbi from "../contract-utils/BaseCarbonTonne.json";
 import * as tco2Abi from "../contract-utils/ToucanCarbonOffsets.json";
+import ifcPropsFromApp from "../utils/ifcPropsFromApp";
 
 // TODO you could separate this interface
-interface ifcRedeemProps {
-  wallet: string;
-  connectWallet: Function;
-  loading: boolean;
-  setLoading: Function;
-}
+
 // TODO make page
 // @ts-ignore some type props BS i don't have the time to look into right now
 const Redeem: NextPage = ({
@@ -29,7 +25,7 @@ const Redeem: NextPage = ({
   connectWallet,
   loading,
   setLoading,
-}: ifcRedeemProps) => {
+}: ifcPropsFromApp) => {
   const navigation = [
     { name: "Dashboard", href: "/dashboard", current: false },
     { name: "Deposit", href: "/deposit", current: false },

@@ -18,13 +18,7 @@ import fetchDepositableTokenTypes from "../utils/fetchDepositableTokenTypes";
 import BalancesTable from "../components/BalancesTable";
 import ifcBalance from "../utils/ifcBalance";
 import fetchBalances from "../utils/fetchBalances";
-
-interface ifcDepositProps {
-  wallet: string;
-  connectWallet: Function;
-  loading: boolean;
-  setLoading: Function;
-}
+import ifcPropsFromApp from "../utils/ifcPropsFromApp";
 
 // @ts-ignore some type props BS i don't have the time to look into right now
 const Deposit: NextPage = ({
@@ -32,7 +26,7 @@ const Deposit: NextPage = ({
   connectWallet,
   loading,
   setLoading,
-}: ifcDepositProps) => {
+}: ifcPropsFromApp) => {
   const navigation = [
     { name: "Dashboard", href: "/dashboard", current: false },
     { name: "Deposit", href: "/deposit", current: true },
