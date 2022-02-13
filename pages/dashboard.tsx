@@ -271,13 +271,17 @@ const Dashboard: NextPage = ({
                     <option value="">
                       Pick a token to use when offsetting
                     </option>
-                    {balances?.map((token) => {
-                      return (
-                        <option key={token.address} value={token.address}>
-                          {token.symbol}
-                        </option>
-                      );
-                    })}
+                    {balances
+                      ?.filter((token) => {
+                        return token.balance != "0.0";
+                      })
+                      .map((token) => {
+                        return (
+                          <option key={token.address} value={token.address}>
+                            {token.symbol} (You have {token.balance} deposited)
+                          </option>
+                        );
+                      })}
                   </select>
                   <button
                     onClick={() => {
