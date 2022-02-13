@@ -12,6 +12,7 @@ const fetchAndFormatTransactions = async (
 
   const formattedTransactions: ifcFormattedTransaction[] = await Promise.all(
     data.data.result.map(async (transaction: ifcTransaction) => {
+      // TODO ISSUE PROBLEM JsonRpc issues start happening when trying to fetch data for 10k transactions
       const offsetStatus = await fetchOffsetStatus(address, transaction.nonce);
 
       const formattedTransaction: ifcFormattedTransaction = {
