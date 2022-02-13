@@ -181,6 +181,7 @@ const Home: NextPage = ({
                 </div>
               </div>
             </div>
+            {/* TODO fill this with more info */}
           </main>
         </div>
       </div>
