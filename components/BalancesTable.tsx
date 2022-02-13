@@ -7,6 +7,10 @@ const BalancesTable = ({ balances }: { balances: ifcBalance[] }) => {
       <h2 className="text-2xl font-bold leading-tight text-gray-900">
         Balances
       </h2>
+      <p className="mt-1 text-sm text-gray-500">
+        This represents the tokens you have deposited or otherwise own within
+        this dapp (specifically the ContractOffsetter contract).
+      </p>
       <div className="mt-5 flex flex-col">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
