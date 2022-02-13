@@ -26,6 +26,8 @@ const Deposit: NextPage = ({
   connectWallet,
   loading,
   setLoading,
+  balances,
+  getAndStoreBalances,
 }: ifcPropsFromApp) => {
   const navigation = [
     { name: "Dashboard", href: "/dashboard", current: false },
@@ -44,44 +46,6 @@ const Deposit: NextPage = ({
   // these are for the form
   const [amount, setAmount] = useState<string>("1.0");
   const [token, setToken] = useState<string>("");
-
-  // this is for stats
-  const [balances, setBalances] = useState<ifcBalance[] | null>(null);
-
-  const storeBalances = async () => {
-    try {
-      if (!wallet) {
-        throw new Error("Connect your wallet first.");
-      }
-      setLoading(true);
-
-      const DepositableTokenTypes = await fetchDepositableTokenTypes();
-
-      if (!DepositableTokenTypes) {
-        throw new Error("No token types available.");
-      }
-
-      const balances = await fetchBalances(DepositableTokenTypes, wallet);
-
-      // sort and store balances in state
-      setBalances(
-        balances.sort((a, b) => {
-          if (a.symbol < b.symbol) {
-            return -1;
-          }
-          if (a.symbol > b.symbol) {
-            return 1;
-          }
-          return 0;
-        })
-      );
-    } catch (error: any) {
-      console.error("error when fetching balances", error);
-      toast.error(error.message, toastOptions);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleDeposit = async () => {
     try {
@@ -139,13 +103,9 @@ const Deposit: NextPage = ({
       toast.error(error.message, toastOptions);
     } finally {
       setLoading(false);
-      storeBalances();
+      getAndStoreBalances();
     }
   };
-
-  useEffect(() => {
-    storeBalances();
-  }, [wallet]);
 
   if (loading) {
     return <Loader />;

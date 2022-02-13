@@ -169,6 +169,7 @@ const Dashboard: NextPage = ({
    * @param transactions an array of unformatted transactions
    */
   const calculateOverallFootprint = (transactions: ifcTransaction[]) => {
+    // TODO this doesn't actually filter for offset transactions
     const overallFootprint: number = transactions?.length * 0.00036; // 0.00000036 TCO2 or 0.00036 kg per transaction
     setOverallEmmissions(overallFootprint);
   };

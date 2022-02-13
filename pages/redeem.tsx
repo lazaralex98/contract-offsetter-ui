@@ -23,6 +23,8 @@ const Redeem: NextPage = ({
   connectWallet,
   loading,
   setLoading,
+  balances,
+  getAndStoreBalances,
 }: ifcPropsFromApp) => {
   const navigation = [
     { name: "Dashboard", href: "/dashboard", current: false },
@@ -43,46 +45,9 @@ const Redeem: NextPage = ({
   const [token, setToken] = useState<string>("");
 
   // this is for stats
-  const [balances, setBalances] = useState<ifcBalance[] | null>(null);
   const [tokensThatBCTPoolhas, setTokensThatBCTPoolhas] = useState<
     ifcBalance[] | null
   >(null);
-
-  // TODO it would make sense to have the balances fetched and stored in _app instead of each individual page that needs it
-  const storeBalances = async () => {
-    try {
-      if (!wallet) {
-        throw new Error("Connect your wallet first.");
-      }
-      setLoading(true);
-
-      const DepositableTokenTypes = await fetchDepositableTokenTypes();
-
-      if (!DepositableTokenTypes) {
-        throw new Error("No token types available.");
-      }
-
-      const balances = await fetchBalances(DepositableTokenTypes, wallet);
-
-      // sort and store balances in state
-      setBalances(
-        balances.sort((a, b) => {
-          if (a.symbol < b.symbol) {
-            return -1;
-          }
-          if (a.symbol > b.symbol) {
-            return 1;
-          }
-          return 0;
-        })
-      );
-    } catch (error: any) {
-      console.error("error when fetching balances", error);
-      toast.error(error.message, toastOptions);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleRedeemal = async () => {
     try {
@@ -126,7 +91,7 @@ const Redeem: NextPage = ({
       toast.error(error.message, toastOptions);
     } finally {
       setLoading(false);
-      storeBalances();
+      getAndStoreBalances();
     }
   };
 
@@ -142,22 +107,6 @@ const Redeem: NextPage = ({
         throw new Error("No balances were found to filter.");
       }
 
-      // @ts-ignore
-      const { ethereum } = window;
-      if (!ethereum) {
-        throw new Error("You need Metamask.");
-      }
-
-      const provider = new ethers.providers.Web3Provider(ethereum);
-      const signer = provider.getSigner();
-
-      // get portal to ContractOffsetter
-      // @ts-ignore
-      const bct: BaseCarbonTonne = new ethers.Contract(
-        process.env.NEXT_PUBLIC_BCT_ADDRESS_MUMBAI || "",
-        bctAbi.abi,
-        signer
-      );
       const filteredBalances: ifcBalance[] = balances.filter(
         (token: ifcBalance) => {
           return ethers.utils
@@ -174,10 +123,6 @@ const Redeem: NextPage = ({
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    storeBalances();
-  }, [wallet]);
 
   useEffect(() => {
     if (wallet && balances) {

@@ -1,14 +1,19 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { toast, ToastContainer } from "react-toastify";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import toastOptions from "../utils/toastOptions";
 import "react-toastify/dist/ReactToastify.css";
+import fetchBalances from "../utils/fetchBalances";
+import fetchDepositableTokenTypes from "../utils/fetchDepositableTokenTypes";
+import ifcBalance from "../utils/ifcBalance";
+import Router from "next/router";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [wallet, setWallet] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [balances, setBalances] = useState<ifcBalance[] | null>(null);
 
   const connectWallet = async () => {
     try {
@@ -43,6 +48,46 @@ function MyApp({ Component, pageProps }: AppProps) {
     setWallet(null);
   };
 
+  const getAndStoreBalances = async () => {
+    try {
+      if (!wallet) {
+        throw new Error("Connect your wallet first.");
+      }
+      console.log(`getAndStoreBalances at: ${Router.asPath}`);
+      setLoading(true);
+
+      const DepositableTokenTypes = await fetchDepositableTokenTypes();
+
+      if (!DepositableTokenTypes) {
+        throw new Error("No token types available.");
+      }
+
+      const balances = await fetchBalances(DepositableTokenTypes, wallet);
+
+      // sort and store balances in state
+      setBalances(
+        balances.sort((a, b) => {
+          if (a.symbol < b.symbol) {
+            return -1;
+          }
+          if (a.symbol > b.symbol) {
+            return 1;
+          }
+          return 0;
+        })
+      );
+    } catch (error: any) {
+      console.error("error when fetching balances", error);
+      toast.error(error.message, toastOptions);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getAndStoreBalances();
+  }, [wallet]);
+
   return (
     <>
       <Component
@@ -51,6 +96,8 @@ function MyApp({ Component, pageProps }: AppProps) {
         disconnectWallet={disconnectWallet}
         loading={loading}
         setLoading={setLoading}
+        balances={balances}
+        getAndStoreBalances={getAndStoreBalances}
         {...pageProps}
       />
       <ToastContainer />
