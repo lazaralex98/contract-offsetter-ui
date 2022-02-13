@@ -296,7 +296,8 @@ const Dashboard: NextPage = ({
                           Left To Offset
                         </dt>
                         <dd className="mt-1 text-3xl font-semibold text-gray-900">
-                          {overallEmmissions / 1000} TCO2
+                          ~ {String(overallEmmissions / 1000).substring(0, 10)}{" "}
+                          TCO2
                         </dd>
                       </div>
                     </dl>
