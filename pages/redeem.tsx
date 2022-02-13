@@ -24,14 +24,12 @@ interface ifcRedeemProps {
 }
 // TODO make page
 // @ts-ignore some type props BS i don't have the time to look into right now
-const Redeem: NextPage = async ({
+const Redeem: NextPage = ({
   wallet,
   connectWallet,
   loading,
   setLoading,
 }: ifcRedeemProps) => {
-  return "x";
-
   const navigation = [
     { name: "Dashboard", href: "/dashboard", current: false },
     { name: "Deposit", href: "/deposit", current: false },
