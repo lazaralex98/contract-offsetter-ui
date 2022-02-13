@@ -4,6 +4,7 @@ interface ifcBalance {
   name: string;
   symbol: string;
   balance: string;
+  bctPoolBalance: string;
 }
 
 export default ifcBalance;

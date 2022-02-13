@@ -15,6 +15,7 @@ import * as coAbi from "../contract-utils/ContractOffsetter.json";
 import * as bctAbi from "../contract-utils/BaseCarbonTonne.json";
 import * as tco2Abi from "../contract-utils/ToucanCarbonOffsets.json";
 import ifcPropsFromApp from "../utils/ifcPropsFromApp";
+import { BaseCarbonTonne } from "../contract-utils/BaseCarbonTonne";
 
 // TODO make page
 // @ts-ignore some type props BS i don't have the time to look into right now
@@ -44,6 +45,9 @@ const Redeem: NextPage = ({
 
   // this is for stats
   const [balances, setBalances] = useState<ifcBalance[] | null>(null);
+  const [tokensThatBCTPoolhas, setTokensThatBCTPoolhas] = useState<
+    ifcBalance[] | null
+  >(null);
 
   // TODO it would make sense to have the balances fetched and stored in _app instead of each individual page that needs it
   const storeBalances = async () => {
@@ -127,9 +131,61 @@ const Redeem: NextPage = ({
     }
   };
 
+  const filterBalancesThatBCTPoolDoesntHave = async () => {
+    try {
+      // fetch balances of BCT pool
+      if (!wallet) {
+        throw new Error("Connect your wallet first.");
+      }
+      setLoading(true);
+
+      if (!balances) {
+        throw new Error("No balances were found to filter.");
+      }
+
+      // @ts-ignore
+      const { ethereum } = window;
+      if (!ethereum) {
+        throw new Error("You need Metamask.");
+      }
+
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+
+      // get portal to ContractOffsetter
+      // @ts-ignore
+      const bct: BaseCarbonTonne = new ethers.Contract(
+        process.env.NEXT_PUBLIC_BCT_ADDRESS_MUMBAI || "",
+        bctAbi.abi,
+        signer
+      );
+      const filteredBalances: ifcBalance[] = balances.filter(
+        (token: ifcBalance) => {
+          return ethers.utils
+            .parseEther(token.bctPoolBalance)
+            .gt(ethers.utils.parseEther("0.0"));
+        }
+      );
+      console.log("aaa", filteredBalances);
+
+      setTokensThatBCTPoolhas(filteredBalances || null);
+    } catch (error: any) {
+      console.error("error when filtering balances", error);
+      toast.error(error.message, toastOptions);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     storeBalances();
   }, [wallet]);
+
+  useEffect(() => {
+    if (wallet && balances) {
+      filterBalancesThatBCTPoolDoesntHave();
+    }
+  }, [balances]);
 
   if (loading) {
     return <Loader />;
@@ -138,6 +194,9 @@ const Redeem: NextPage = ({
   if (!wallet) {
     return <ConnectWalletAlert connectWallet={connectWallet} />;
   }
+
+  console.log("balances", balances);
+  console.log("filetered tokens", tokensThatBCTPoolhas);
 
   return (
     <>
@@ -218,9 +277,10 @@ const Redeem: NextPage = ({
                             autoComplete="token"
                             className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                           >
-                            <option value="">Pick a token to redeem</option>
-                            {balances
+                            <option value="">Pick a token to redeem for</option>
+                            {tokensThatBCTPoolhas
                               ?.filter((token) => {
+                                // filter BCT out
                                 if (token.symbol != "BCT") {
                                   return token;
                                 }
@@ -228,7 +288,10 @@ const Redeem: NextPage = ({
                               // TODO filter out tokens that the BCT pool doesn't have
                               .map((token) => {
                                 return (
-                                  <option value={token.address}>
+                                  <option
+                                    key={token.symbol}
+                                    value={token.address}
+                                  >
                                     {token.symbol}
                                   </option>
                                 );

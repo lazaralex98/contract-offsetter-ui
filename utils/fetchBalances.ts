@@ -1,7 +1,9 @@
 import * as coAbi from "../contract-utils/ContractOffsetter.json";
+import * as bctAbi from "../contract-utils/BaseCarbonTonne.json";
 import { ethers } from "ethers";
 import ifcBalance from "./ifcBalance";
 import { ifcTokenType } from "./fetchDepositableTokenTypes";
+import { BaseCarbonTonne } from "../contract-utils/BaseCarbonTonne";
 
 const fetchBalances = async (
   DepositableTokenTypes: ifcTokenType[],
@@ -24,13 +26,23 @@ const fetchBalances = async (
     signer
   );
 
+  // @ts-ignore
+  const bct: BaseCarbonTonne = new ethers.Contract(
+    process.env.NEXT_PUBLIC_BCT_ADDRESS_MUMBAI || "",
+    bctAbi.abi,
+    signer
+  );
+
   // fetch the balance of each token from the blockchain
   const balances = await Promise.all(
     DepositableTokenTypes.map(async (tokenType) => {
       const balance = ethers.utils.formatEther(
         await co.balances(wallet, tokenType.address)
       );
-      return { ...tokenType, balance };
+      const bctPoolBalance = ethers.utils.formatEther(
+        await bct.tokenBalances(tokenType.address)
+      );
+      return { ...tokenType, balance, bctPoolBalance };
     })
   );
   return balances;
