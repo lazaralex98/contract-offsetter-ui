@@ -195,6 +195,7 @@ const Deposit: NextPage = ({
                           >
                             <option value="">Pick a token to deposit</option>
                             {balances?.map((token) => {
+                              // TODO filter out tokens the user doesn't hold and also render his balance for each
                               return (
                                 <option
                                   key={token.address}
