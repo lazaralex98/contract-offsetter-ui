@@ -17,6 +17,7 @@ import Link from "next/link";
 import fetchDepositableTokenTypes from "../utils/fetchDepositableTokenTypes";
 import BalancesTable from "../components/BalancesTable";
 import ifcBalance from "../utils/ifcBalance";
+import fetchBalances from "../utils/fetchBalances";
 
 interface ifcDepositProps {
   wallet: string;
@@ -111,11 +112,11 @@ const Deposit: NextPage = ({
       toast.error(error.message, toastOptions);
     } finally {
       setLoading(false);
-      fetchBalances();
+      storeBalances();
     }
   };
 
-  const fetchBalances = async () => {
+  const storeBalances = async () => {
     try {
       if (!wallet) {
         throw new Error("Connect your wallet first.");
@@ -128,32 +129,7 @@ const Deposit: NextPage = ({
         throw new Error("No token types available.");
       }
 
-      // @ts-ignore
-      const { ethereum } = window;
-      if (!ethereum) {
-        throw new Error("You need Metamask.");
-      }
-
-      const provider = new ethers.providers.Web3Provider(ethereum);
-      const signer = provider.getSigner();
-
-      // get portal to ContractOffsetter
-      // @ts-ignore
-      const co: ContractOffsetter = new ethers.Contract(
-        process.env.NEXT_PUBLIC_CONTRACT_OFFSETTER_ADDRESS_MUMBAI || "",
-        coAbi.abi,
-        signer
-      );
-
-      // fetch the balance of each token from the blockchain
-      const balances = await Promise.all(
-        DepositableTokenTypes.map(async (tokenType) => {
-          const balance = ethers.utils.formatEther(
-            await co.balances(wallet, tokenType.address)
-          );
-          return { ...tokenType, balance };
-        })
-      );
+      const balances = await fetchBalances(DepositableTokenTypes, wallet);
 
       // sort and store balances in state
       setBalances(
@@ -176,7 +152,7 @@ const Deposit: NextPage = ({
   };
 
   useEffect(() => {
-    fetchBalances();
+    storeBalances();
   }, [wallet]);
 
   if (loading) {

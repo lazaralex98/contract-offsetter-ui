@@ -22,4 +22,6 @@ const fetchDepositableTokenTypes = async (): Promise<ifcTokenType[]> => {
   return tokensToCheck;
 };
 
+export type { ifcTokenType };
+
 export default fetchDepositableTokenTypes;
