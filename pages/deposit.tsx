@@ -236,7 +236,10 @@ const Deposit: NextPage = ({
                             <option value="">Pick a token to deposit</option>
                             {balances?.map((token) => {
                               return (
-                                <option value={token.address}>
+                                <option
+                                  key={token.address}
+                                  value={token.address}
+                                >
                                   {token.symbol}
                                 </option>
                               );
