@@ -87,26 +87,27 @@ const Dashboard: NextPage = ({
       const data: any = await response.json();
       if (data.message != "OK") throw new Error(data.message);
 
-      calculateOverallGas(data.data.result);
-      calculateOverallFootprint(data.data.result);
+      const formattedTransactions: ifcFormattedTransaction[] =
+        await Promise.all(
+          data.data.result.map(async (transaction: ifcTransaction) => {
+            const offsetStatus = await fetchOffsetStatus(
+              wallet,
+              transaction.nonce
+            );
 
-      const formattedTransactions = await Promise.all(
-        data.data.result.map(async (transaction: ifcTransaction) => {
-          const offsetStatus = await fetchOffsetStatus(
-            wallet,
-            transaction.nonce
-          );
+            const formattedTransaction: ifcFormattedTransaction = {
+              hash: transaction.hash,
+              gasUsed: transaction.gasUsed,
+              nonce: transaction.nonce,
+              transactionStatus: transaction.txreceipt_status,
+              offsetStatus: offsetStatus,
+            };
+            return formattedTransaction;
+          })
+        );
 
-          const formattedTransaction: ifcFormattedTransaction = {
-            hash: transaction.hash,
-            gasUsed: transaction.gasUsed,
-            nonce: transaction.nonce,
-            transactionStatus: transaction.txreceipt_status,
-            offsetStatus: offsetStatus,
-          };
-          return formattedTransaction;
-        })
-      );
+      calculateOverallGas(formattedTransactions);
+      calculateOverallFootprint(formattedTransactions);
 
       setTransactions(formattedTransactions);
     } catch (error: any) {
@@ -161,10 +162,10 @@ const Dashboard: NextPage = ({
    * calculates overall gas used and stores it in React state
    * @param transactions an array of unformatted transactions
    */
-  const calculateOverallGas = (transactions: ifcTransaction[]) => {
+  const calculateOverallGas = (transactions: ifcFormattedTransaction[]) => {
     let overallGas: number = 0;
     transactions?.forEach((transaction) => {
-      overallGas += parseInt(transaction.gas);
+      overallGas += parseInt(transaction.gasUsed);
     });
     setOverallGas(overallGas);
   };
@@ -173,9 +174,13 @@ const Dashboard: NextPage = ({
    * calculates the overall footprint (based on transaction number) and stores it in React state
    * @param transactions an array of unformatted transactions
    */
-  const calculateOverallFootprint = (transactions: ifcTransaction[]) => {
-    // TODO this doesn't actually filter for offset transactions
-    const overallFootprint: number = transactions?.length * 0.00036; // 0.00000036 TCO2 or 0.00036 kg per transaction
+  const calculateOverallFootprint = (
+    transactions: ifcFormattedTransaction[]
+  ) => {
+    const notOffsetTransaction = transactions.filter(
+      (transaction) => !transaction.offsetStatus
+    );
+    const overallFootprint: number = notOffsetTransaction?.length * 0.00036; // 0.00000036 TCO2 or 0.00036 kg per transaction
     setOverallEmmissions(overallFootprint);
   };
 
@@ -308,7 +313,7 @@ const Dashboard: NextPage = ({
                     <dl className="grid grid-cols-1 gap-5 sm:grid-cols-3">
                       <div className="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
                         <dt className="text-sm font-medium text-gray-500 truncate">
-                          Overall Gas Used
+                          Overall Gas Used (All transactions)
                         </dt>
                         <dd className="mt-1 text-3xl font-semibold text-gray-900">
                           {Intl.NumberFormat("en-US").format(overallGas) + " "}
@@ -317,7 +322,7 @@ const Dashboard: NextPage = ({
                       </div>
                       <div className="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
                         <dt className="text-sm font-medium text-gray-500 truncate">
-                          Overall (Not Offset) CO2 Emmissions
+                          Not Offset CO2 Emmissions
                         </dt>
                         <dd className="mt-1 text-3xl font-semibold text-gray-900">
                           {overallEmmissions} kg
