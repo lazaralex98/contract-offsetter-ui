@@ -1,4 +1,11 @@
-const fetchDepositableTokenTypes = async () => {
+interface ifcTokenType {
+  __typename: string;
+  address: string;
+  name: string;
+  symbol: string;
+}
+
+const fetchDepositableTokenTypes = async (): Promise<ifcTokenType[]> => {
   const response = await fetch(`/api/getAllTCO2Types`);
   const data: any = await response.json();
 
