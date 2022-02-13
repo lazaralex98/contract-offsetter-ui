@@ -194,17 +194,20 @@ const Deposit: NextPage = ({
                             className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                           >
                             <option value="">Pick a token to deposit</option>
-                            {balances?.map((token) => {
-                              // TODO filter out tokens the user doesn't hold and also render his balance for each
-                              return (
-                                <option
-                                  key={token.address}
-                                  value={token.address}
-                                >
-                                  {token.symbol}
-                                </option>
-                              );
-                            })}
+                            {balances
+                              ?.filter((token) => {
+                                return token.balance != "0.0";
+                              })
+                              .map((token) => {
+                                return (
+                                  <option
+                                    key={token.address}
+                                    value={token.address}
+                                  >
+                                    {token.symbol} (You have {token.balance})
+                                  </option>
+                                );
+                              })}
                           </select>
                         </div>
                       </div>
