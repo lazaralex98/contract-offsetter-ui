@@ -43,9 +43,7 @@ const Deposit: NextPage = ({
 
   // these are for the form
   const [amount, setAmount] = useState<string>("1.0");
-  const [token, setToken] = useState<string>(
-    process.env.NEXT_PUBLIC_BCT_ADDRESS_MUMBAI || ""
-  );
+  const [token, setToken] = useState<string>("");
 
   // this is for stats
   const [balances, setBalances] = useState<ifcBalance[] | null>(null);
@@ -235,6 +233,7 @@ const Deposit: NextPage = ({
                             autoComplete="token"
                             className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                           >
+                            <option value="">Pick a token to deposit</option>
                             {balances?.map((token) => {
                               return (
                                 <option value={token.address}>
