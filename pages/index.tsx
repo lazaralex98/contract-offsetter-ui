@@ -26,8 +26,8 @@ const Home: NextPage = ({
   connectWallet,
   loading,
 }: ifcPropsFromApp) => {
+  const router = useRouter();
   if (wallet) {
-    const router = useRouter();
     router.push("/dashboard");
   }
 
