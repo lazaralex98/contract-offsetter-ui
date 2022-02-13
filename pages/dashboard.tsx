@@ -243,8 +243,6 @@ const Dashboard: NextPage = ({
           return ethers.utils.parseEther(transaction.nonce);
         });
 
-      console.log("nonces to offset", noncesBigNumberish);
-
       // get offset status of for the specified address for its specified nonce
       const offsetTxn = await co.offset(
         token,
