@@ -159,6 +159,7 @@ const Deposit: NextPage = ({
         signer
       );
 
+      // fetch the balance of each token from the blockchain
       const balances = await Promise.all(
         DepositableTokenTypes.map(async (tokenType) => {
           const balance = ethers.utils.formatEther(
@@ -167,6 +168,8 @@ const Deposit: NextPage = ({
           return { ...tokenType, balance };
         })
       );
+
+      // sort and store balances in state
       setBalances(
         balances.sort((a, b) => {
           if (a.symbol < b.symbol) {
