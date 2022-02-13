@@ -28,6 +28,7 @@ const Redeem: NextPage = ({
 }: ifcPropsFromApp) => {
   const navigation = [
     { name: "Dashboard", href: "/dashboard", current: false },
+    { name: "Offset", href: "/offset", current: false },
     { name: "Deposit", href: "/deposit", current: false },
     { name: "Redeem", href: "/redeem", current: true },
     { name: "Help", href: "/help", current: false },

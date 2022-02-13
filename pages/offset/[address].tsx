@@ -43,6 +43,7 @@ const Offset: NextPage = ({
 
   const navigation = [
     { name: "Dashboard", href: "/dashboard", current: false },
+    { name: "Offset", href: "/offset", current: false },
     { name: "Deposit", href: "/deposit", current: false },
     { name: "Redeem", href: "/redeem", current: false },
     { name: "Help", href: "/help", current: false },
