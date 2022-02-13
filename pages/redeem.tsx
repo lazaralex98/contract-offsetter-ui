@@ -292,7 +292,8 @@ const Redeem: NextPage = ({
                                     key={token.symbol}
                                     value={token.address}
                                   >
-                                    {token.symbol}
+                                    {token.symbol} (Can redeem max{" "}
+                                    {token.bctPoolBalance})
                                   </option>
                                 );
                               })}
