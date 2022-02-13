@@ -15,6 +15,7 @@ import * as coAbi from "../contract-utils/ContractOffsetter.json";
 import * as bctAbi from "../contract-utils/BaseCarbonTonne.json";
 import * as tco2Abi from "../contract-utils/ToucanCarbonOffsets.json";
 
+// TODO you could separate this interface
 interface ifcRedeemProps {
   wallet: string;
   connectWallet: Function;
