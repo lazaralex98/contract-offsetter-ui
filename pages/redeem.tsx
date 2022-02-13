@@ -105,7 +105,7 @@ const Redeem: NextPage = ({
         signer
       );
 
-      // we then deposit the amount of TCO2/BCT into the ContractOffsetter
+      // we then redeem the amount of BCT for the desired TCO2 using the ContractOffsetter
       const redeemalTxn = await co.redeemBCT(
         token,
         ethers.utils.parseEther(amount),
@@ -119,7 +119,7 @@ const Redeem: NextPage = ({
 
       toast(`You redeemed ${amount} BCT for TCO2s`, toastOptions);
     } catch (error: any) {
-      console.error("error when depositing", error);
+      console.error("error when redeeming", error);
       toast.error(error.message, toastOptions);
     } finally {
       setLoading(false);
@@ -159,100 +159,98 @@ const Redeem: NextPage = ({
             </div>
           </header>
           <main>
-            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               {/* Replace with your content */}
-              <div className="px-4 py-8 sm:px-0">
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handleRedeemal();
-                  }}
-                  className="space-y-8 divide-y divide-gray-200"
-                >
-                  <div className="space-y-8 divide-y divide-gray-200">
-                    <div className="pt-8">
-                      <div>
-                        <p className="mt-1 text-sm text-gray-500">
-                          Choose what TCO2 you want to redeem your BCT for and
-                          how much of it you want redeemed.
-                        </p>
-                      </div>
-                      <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-                        {/* say amount to deposit */}
-                        <div className="sm:col-span-4">
-                          <label
-                            htmlFor="email"
-                            className="block text-sm font-medium text-gray-700"
-                          >
-                            Amount to redeem
-                          </label>
-                          <div className="mt-1">
-                            <input
-                              onChange={(e) => {
-                                setAmount(e.target.value);
-                              }}
-                              value={amount}
-                              id="amount"
-                              name="amount"
-                              type="text"
-                              autoComplete="amount"
-                              className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                            />
-                          </div>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleRedeemal();
+                }}
+                className="space-y-8 divide-y divide-gray-200"
+              >
+                <div className="space-y-8 divide-y divide-gray-200">
+                  <div>
+                    <div>
+                      <p className="mt-1 text-sm text-gray-500">
+                        Choose what TCO2 you want to redeem your BCT for and how
+                        much of it you want redeemed.
+                      </p>
+                    </div>
+                    <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                      {/* say amount to redeem */}
+                      <div className="sm:col-span-4">
+                        <label
+                          htmlFor="email"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          Amount to redeem
+                        </label>
+                        <div className="mt-1">
+                          <input
+                            onChange={(e) => {
+                              setAmount(e.target.value);
+                            }}
+                            value={amount}
+                            id="amount"
+                            name="amount"
+                            type="text"
+                            autoComplete="amount"
+                            className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                          />
                         </div>
+                      </div>
 
-                        {/* select coin to receive */}
-                        <div className="sm:col-span-3">
-                          <label
-                            htmlFor="country"
-                            className="block text-sm font-medium text-gray-700"
+                      {/* select coin to receive */}
+                      <div className="sm:col-span-3">
+                        <label
+                          htmlFor="country"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          What do you want to get?
+                        </label>
+                        <div className="mt-1">
+                          <select
+                            onChange={(e) => {
+                              setToken(e.target.value);
+                            }}
+                            id="token"
+                            name="token"
+                            autoComplete="token"
+                            className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                           >
-                            What do you want to get?
-                          </label>
-                          <div className="mt-1">
-                            <select
-                              onChange={(e) => {
-                                setToken(e.target.value);
-                              }}
-                              id="token"
-                              name="token"
-                              autoComplete="token"
-                              className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                            >
-                              <option value="">Pick a token to redeem</option>
-                              {balances
-                                ?.filter((token) => {
-                                  if (token.symbol != "BCT") {
-                                    return token;
-                                  }
-                                })
-                                .map((token) => {
-                                  return (
-                                    <option value={token.address}>
-                                      {token.symbol}
-                                    </option>
-                                  );
-                                })}
-                            </select>
-                          </div>
+                            <option value="">Pick a token to redeem</option>
+                            {balances
+                              ?.filter((token) => {
+                                if (token.symbol != "BCT") {
+                                  return token;
+                                }
+                              })
+                              .map((token) => {
+                                return (
+                                  <option value={token.address}>
+                                    {token.symbol}
+                                  </option>
+                                );
+                              })}
+                          </select>
                         </div>
                       </div>
                     </div>
                   </div>
+                </div>
 
-                  <div className="pt-5">
-                    <div className="flex justify-end">
-                      <button
-                        type="submit"
-                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                      >
-                        Deposit
-                      </button>
-                    </div>
+                <div className="pt-5">
+                  <div className="flex justify-end">
+                    <button
+                      type="submit"
+                      className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                      Redeem
+                    </button>
                   </div>
-                </form>
-                {balances ? <BalancesTable balances={balances} /> : ""}
-              </div>
+                </div>
+              </form>
+              {balances ? <BalancesTable balances={balances} /> : ""}
               {/* /End replace */}
             </div>
           </main>

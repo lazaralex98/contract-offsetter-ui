@@ -185,7 +185,7 @@ const Deposit: NextPage = ({
                 className="space-y-8 divide-y divide-gray-200"
               >
                 <div className="space-y-8 divide-y divide-gray-200">
-                  <div className="pt-8">
+                  <div>
                     <div>
                       <p className="mt-1 text-sm text-gray-500">
                         Choose what you want to deposit and how much.
