@@ -45,6 +45,7 @@ const Redeem: NextPage = ({
   // this is for stats
   const [balances, setBalances] = useState<ifcBalance[] | null>(null);
 
+  // TODO it would make sense to have the balances fetched and stored in _app instead of each individual page that needs it
   const storeBalances = async () => {
     try {
       if (!wallet) {
