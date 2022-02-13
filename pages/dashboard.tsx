@@ -55,6 +55,7 @@ const Dashboard: NextPage = ({
   >(null);
   const [overallGas, setOverallGas] = useState<number>(0);
   const [overallEmmissions, setOverallEmmissions] = useState<number>(0);
+  const [emmissionsInTonnes, setEmmissionsInTonnes] = useState<string>("0");
 
   // this is for the form
   const [token, setToken] = useState<string>("");
@@ -180,21 +181,41 @@ const Dashboard: NextPage = ({
     const notOffsetTransaction = transactions.filter(
       (transaction) => !transaction.offsetStatus
     );
-    const overallFootprint: number = notOffsetTransaction?.length * 0.00036; // 0.00000036 TCO2 or 0.00036 kg per transaction
+
+    // 0.00000036 TCO2 or 0.00036 kg per transaction
+    // get the overall footprint in kg
+    const overallFootprint: number = notOffsetTransaction?.length * 0.00036;
+    // get overall footprint in tonnes
+    const overallFootprintInTonnes = String(overallFootprint / 1000).substring(
+      0,
+      10
+    );
+
+    // set overall footprint (for display) in kg
     setOverallEmmissions(overallFootprint);
+    // set overall footprint in tonnes
+    setEmmissionsInTonnes(overallFootprintInTonnes);
   };
 
-  const offsetAll = async (tco2Address: string) => {
-    // TODO offset all transactions
+  const offsetAll = async () => {
     try {
       if (!wallet) {
         throw new Error("Connect your wallet first.");
       }
+      setLoading(true);
 
       // @ts-ignore
       const { ethereum } = window;
       if (!ethereum) {
         throw new Error("You need Metamask.");
+      }
+
+      if (!transactions) {
+        throw new Error("No transactions were loaded.");
+      }
+
+      if (emmissionsInTonnes == "0") {
+        throw new Error("Nothing to offset");
       }
 
       const provider = new ethers.providers.Web3Provider(ethereum);
@@ -208,22 +229,26 @@ const Dashboard: NextPage = ({
         signer
       );
 
-      const noncesBigNumberish = transactions?.map((transaction) => {
+      const noncesBigNumberish = transactions.map((transaction) => {
         return ethers.utils.parseEther(transaction.nonce);
       });
 
       // get offset status of for the specified address for its specified nonce
       const offsetTxn = await co.offset(
-        tco2Address,
-        ethers.utils.parseEther(String(overallEmmissions / 1000)),
+        token,
+        ethers.utils.parseEther(emmissionsInTonnes),
         wallet,
-        noncesBigNumberish || []
+        noncesBigNumberish
       );
       await offsetTxn.wait();
-
-      fetchTransactionsOfAddress(wallet);
+      console.log("offset hash", offsetTxn.hash);
+      toast.success(`You've successfully offset all your footprint 🌳`);
     } catch (error: any) {
       console.error("error when fetching offset status", error);
+      toast.error(error.message, toastOptions);
+    } finally {
+      setLoading(false);
+      fetchTransactionsOfAddress(wallet);
     }
   };
 
@@ -278,7 +303,18 @@ const Dashboard: NextPage = ({
                     </option>
                     {balances
                       ?.filter((token) => {
-                        return token.balance != "0.0";
+                        return (
+                          // filter out tokens where user doesn't have a balance
+                          token.balance != "0.0" &&
+                          // filter out BCT because you can only offset with TCO2
+                          token.symbol != "BCT" &&
+                          // filter out TCO2s where user hasn't deposited enough to cover overall footprint
+                          ethers.utils
+                            .parseEther(token.balance)
+                            .gt(
+                              ethers.utils.parseEther(String(overallEmmissions))
+                            )
+                        );
                       })
                       .map((token) => {
                         return (
@@ -333,8 +369,7 @@ const Dashboard: NextPage = ({
                           Left To Offset
                         </dt>
                         <dd className="mt-1 text-3xl font-semibold text-gray-900">
-                          ~ {String(overallEmmissions / 1000).substring(0, 10)}{" "}
-                          TCO2
+                          ~ {emmissionsInTonnes} TCO2
                         </dd>
                       </div>
                     </dl>
