@@ -17,7 +17,6 @@ import * as tco2Abi from "../contract-utils/ToucanCarbonOffsets.json";
 import ifcPropsFromApp from "../utils/ifcPropsFromApp";
 import { BaseCarbonTonne } from "../contract-utils/BaseCarbonTonne";
 
-// TODO make page
 // @ts-ignore some type props BS i don't have the time to look into right now
 const Redeem: NextPage = ({
   wallet,
@@ -166,7 +165,6 @@ const Redeem: NextPage = ({
             .gt(ethers.utils.parseEther("0.0"));
         }
       );
-      console.log("aaa", filteredBalances);
 
       setTokensThatBCTPoolhas(filteredBalances || null);
     } catch (error: any) {
@@ -194,9 +192,6 @@ const Redeem: NextPage = ({
   if (!wallet) {
     return <ConnectWalletAlert connectWallet={connectWallet} />;
   }
-
-  console.log("balances", balances);
-  console.log("filetered tokens", tokensThatBCTPoolhas);
 
   return (
     <>
@@ -285,7 +280,6 @@ const Redeem: NextPage = ({
                                   return token;
                                 }
                               })
-                              // TODO filter out tokens that the BCT pool doesn't have
                               .map((token) => {
                                 return (
                                   <option
