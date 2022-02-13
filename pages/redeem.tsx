@@ -40,9 +40,7 @@ const Redeem: NextPage = ({
 
   // these are for the form
   const [amount, setAmount] = useState<string>("1.0");
-  const [token, setToken] = useState<string>(
-    "(await fetchDepositableTokenTypes())[0].address"
-  );
+  const [token, setToken] = useState<string>("");
 
   // this is for stats
   const [balances, setBalances] = useState<ifcBalance[] | null>(null);
@@ -234,9 +232,10 @@ const Redeem: NextPage = ({
                               autoComplete="token"
                               className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                             >
+                              <option value="">Pick a token to redeem</option>
                               {balances
                                 ?.filter((token) => {
-                                  if (token.symbol == "BCT") {
+                                  if (token.symbol != "BCT") {
                                     return token;
                                   }
                                 })
