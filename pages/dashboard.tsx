@@ -47,12 +47,17 @@ const Dashboard: NextPage = ({
   connectWallet,
   loading,
   setLoading,
+  balances,
 }: ifcPropsFromApp) => {
+  // these are stats for after you load transactions
   const [transactions, setTransactions] = useState<
     ifcFormattedTransaction[] | null
   >(null);
   const [overallGas, setOverallGas] = useState<number>(0);
   const [overallEmmissions, setOverallEmmissions] = useState<number>(0);
+
+  // this is for the form
+  const [token, setToken] = useState<string>("");
 
   const navigation = [
     { name: "Dashboard", href: "/dashboard", current: true },
@@ -243,7 +248,7 @@ const Dashboard: NextPage = ({
                 Dashboard
               </h1>
             </div>
-            <div className="mt-4 flex md:mt-0 md:ml-4">
+            <div className="mt-4 flex flex-wrap md:mt-0 md:ml-4">
               <Link href="/offset/">
                 <a
                   type="button"
@@ -253,15 +258,37 @@ const Dashboard: NextPage = ({
                 </a>
               </Link>
               {transactions ? (
-                <button
-                  onClick={() => {
-                    offsetAll();
-                  }}
-                  type="button"
-                  className="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                  Offset All
-                </button>
+                <div className="flex flex-wrap">
+                  <select
+                    onChange={(e) => {
+                      setToken(e.target.value);
+                    }}
+                    id="token"
+                    name="token"
+                    autoComplete="token"
+                    className="ml-3 inline-flex items-center shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm border-gray-300 rounded-md"
+                  >
+                    <option value="">
+                      Pick a token to use when offsetting
+                    </option>
+                    {balances?.map((token) => {
+                      return (
+                        <option key={token.address} value={token.address}>
+                          {token.symbol}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  <button
+                    onClick={() => {
+                      offsetAll();
+                    }}
+                    type="button"
+                    className="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  >
+                    Offset All
+                  </button>
+                </div>
               ) : (
                 ""
               )}
