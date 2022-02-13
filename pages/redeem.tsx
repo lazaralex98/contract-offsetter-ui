@@ -225,6 +225,7 @@ const Redeem: NextPage = ({
                                   return token;
                                 }
                               })
+                              // TODO filter out tokens that the BCT pool doesn't have
                               .map((token) => {
                                 return (
                                   <option value={token.address}>
