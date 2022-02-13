@@ -52,7 +52,6 @@ const Dashboard: NextPage = ({
   /**
    * fetches an array of transactions for the given address
    * @param address address of user/contract to fetch transactions for
-   * @issue TODO NOTE WARNING the API endpoint returns a maximum of 10,000 records only
    */
   const getAndStoreTransactions = async (address: string) => {
     try {

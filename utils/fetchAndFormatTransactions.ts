@@ -1,6 +1,7 @@
 import fetchOffsetStatus from "./fetchOffsetStatus";
 import { ifcFormattedTransaction, ifcTransaction } from "./ifcTransaction";
 
+// TODO PROBLEM NOTE WARNING the API endpoint returns a maximum of 10,000 records only
 const fetchAndFormatTransactions = async (
   address: string
 ): Promise<ifcFormattedTransaction[]> => {
