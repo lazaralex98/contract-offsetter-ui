@@ -11,7 +11,7 @@ import AppNavbar from "../../components/AppNavbar";
 import { useRouter } from "next/router";
 
 // @ts-ignore some type props BS i don't have the time to look into right now
-const Deposit: NextPage = ({
+const Offset: NextPage = ({
   wallet,
   connectWallet,
   loading,
@@ -47,7 +47,7 @@ const Deposit: NextPage = ({
   return (
     <>
       <Head>
-        <title>Deposit</title>
+        <title>Offset</title>
       </Head>
       <div className="min-h-full">
         <AppNavbar
@@ -123,4 +123,4 @@ const Deposit: NextPage = ({
   );
 };
 
-export default Deposit;
+export default Offset;
