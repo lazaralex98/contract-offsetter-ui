@@ -1,34 +1,40 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+A dapp that calculates footprint on the frontend.
 
-## Getting Started
+User connects wallet and he gets to a dashboard that shows him his address and his balance sheet within the `ContractOffsetter` contract (any BCT, TCO2 that he may have deposited).
 
-First, run the development server:
+In this dashboard, the user shall have a few options:
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+1. deposit BCT/TCO2
+2. redeem BCT for TCO2
+3. offset emissions
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The first 2 are fairly straightforward (I could have different pages for each), let's discuss #3.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+User clicks on "load my transactions" and a `loadTransactions()` function:
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+1. loads (and renders) all his transactions
+2. parses all gas for these transactions
+3. multiplies that by an emission factor to get the overall_emmissions and renders this overall_emmissions as well
+   (I’ll use the 0.00000036 TCO2 per transaction number we came up with)
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+The user can also use a form to load transactions of another wallet/contract. (There could be a separate page for each address)
 
-## Learn More
+Once the user has a view of all transactions for his address of choice, he should have an "Offset All" btn that will run a `offsetAll()` function.
 
-To learn more about Next.js, take a look at the following resources:
+The `offsetAll()` function will interact with the `ContractOffsetter` contract to offset an amount of TCO2 equal to overall_emmissions.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+It's SUPER IMPORTANT to edit the contract such that it remembers which nonces were offset. I think a nested mapping in the contract could work. It could look like: `user/contract => (nonce => true/false)`. I think the `offset()` method in the contract would need to take in the nonces as an array of uints?
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+This opens up the possibility to offset any one specific transaction or range of transactions. (I'm not going to build the UI for this yet, I think, but it's an option for the future)
 
-## Deploy on Vercel
+I think the emitted event of the `offset()` method should become a bit more intricate. It should have:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. the address that did the offsetting
+2. the address of the TCO2 that was used
+3. a uint representing how much was offset
+4. the address that had the offsetting done to it
+5. an array of the nonces that were offset
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+All this does away with the `addContract()` and `addEvents()` methods.
+
+Things may change as I build, especially since I'm on a tight timeline.
