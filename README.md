@@ -1,3 +1,5 @@
+// TODO modify this to reflect the actual state of the dapp
+
 A dapp that calculates footprint on the frontend.
 
 User connects wallet and he gets to a dashboard that shows him his address and his balance sheet within the `ContractOffsetter` contract (any BCT, TCO2 that he may have deposited).
