@@ -50,17 +50,16 @@ const fetchAndFormatTransactions = async (
         );
       })
       .map(async (transaction: ifcTransaction) => {
-        // TODO ISSUE PROBLEM JsonRpc issues start happening when trying to fetch data for a lot of transactions
-        // solution, use a lastOffsetNonce instead of having a status for each transaction
-        // const offsetStatus = await fetchOffsetStatus(address, transaction.nonce);
-        const offsetStatus = false;
+        // TODO use a nonceOflastOffset instead of having a status for each transaction
+        const nonceOflastOffset = await fetchNonceOfLastOffset(address);
 
         const formattedTransaction: ifcFormattedTransaction = {
           hash: transaction.hash,
           gasUsed: transaction.gasUsed,
           nonce: transaction.nonce,
           transactionStatus: transaction.txreceipt_status,
-          offsetStatus: offsetStatus,
+          // if the nonce of the last offset is bigger/equal than nonce, the transaction has been offset
+          offsetStatus: nonceOflastOffset >= transaction.nonce,
         };
         return formattedTransaction;
       })
