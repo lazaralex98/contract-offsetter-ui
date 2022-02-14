@@ -9,22 +9,26 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const fetchTransactionsOfAddress = async (address: string) => {
+  const fetchTransactionsOfAddress = async (
+    address: string,
+    endBlock: string
+  ) => {
     let response = await fetch(
-      `https://api-testnet.polygonscan.com/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${process.env.POLYGONSCAN_API_KEY}`
+      `https://api-testnet.polygonscan.com/api?module=account&action=txlist&address=${address}&startblock=0&endblock=${endBlock}&sort=desc&apikey=${process.env.POLYGONSCAN_API_KEY}`
     );
     let data = await response.json();
     return data;
   };
 
   const address = req.query["address"];
+  const endBlock = req.query["endBlock"] || "99999999";
 
   if (!address) {
     res.status(500).json({ message: "You need to provide a valid address." });
   }
 
   // @ts-ignore
-  const data: any = await fetchTransactionsOfAddress(address);
+  const data: any = await fetchTransactionsOfAddress(address, endBlock);
 
   if (data.message != "OK") {
     res.status(500).json({
