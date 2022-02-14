@@ -49,7 +49,7 @@ const BalancesTable = ({ balances }: { balances: ifcBalance[] }) => {
                     .filter((token) => token.balance != "0.0")
                     .map((token, index) => (
                       <tr
-                        key={token.address}
+                        key={index}
                         className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
                       >
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
