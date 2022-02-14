@@ -235,9 +235,7 @@ const Dashboard: NextPage = ({
                           // filter out TCO2s where user hasn't deposited enough to cover overall footprint
                           ethers.utils
                             .parseEther(token.balance)
-                            .gt(
-                              ethers.utils.parseEther(String(overallEmmissions))
-                            )
+                            .gt(ethers.utils.parseEther(emmissionsInTonnes))
                         );
                       })
                       .map((token) => {

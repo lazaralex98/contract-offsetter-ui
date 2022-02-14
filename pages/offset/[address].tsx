@@ -36,7 +36,9 @@ const Offset: NextPage = ({
     ifcFormattedTransaction[] | null
   >(null);
   const [overallGas, setOverallGas] = useState<number>(0);
+  // emmissions in kg
   const [overallEmmissions, setOverallEmmissions] = useState<number>(0);
+  // emmissions in tonnes
   const [emmissionsInTonnes, setEmmissionsInTonnes] = useState<string>("0");
 
   // this is for the form
@@ -241,9 +243,7 @@ const Offset: NextPage = ({
                           // filter out TCO2s where user hasn't deposited enough to cover overall footprint
                           ethers.utils
                             .parseEther(token.balance)
-                            .gt(
-                              ethers.utils.parseEther(String(overallEmmissions))
-                            )
+                            .gt(ethers.utils.parseEther(emmissionsInTonnes))
                         );
                       })
                       .map((token) => {
