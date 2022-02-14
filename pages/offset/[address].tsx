@@ -117,7 +117,7 @@ const Offset: NextPage = ({
     setEmmissionsInTonnes(overallFootprintInTonnes);
   };
 
-  // TODO there still is an issue when attempting to offset VERY small numbers like: 3.6e-7 (or very big transactions too)
+  // TODO there still is an issue when attempting to offset VERY small numbers like: 3.6e-7
   const handleOffset = async () => {
     try {
       if (!wallet) {
