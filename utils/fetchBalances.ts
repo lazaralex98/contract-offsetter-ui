@@ -42,6 +42,7 @@ const fetchBalances = async (
       const bctPoolBalance = ethers.utils.formatEther(
         await bct.tokenBalances(tokenType.address)
       );
+      // TODO also fetch and returns the user's wallet balance of each token maybe?
       return { ...tokenType, balance, bctPoolBalance };
     })
   );

@@ -198,6 +198,7 @@ const Deposit: NextPage = ({
                             {balances
                               ?.filter((token) => {
                                 // TODO filter out tokens that the user doesn't have in his wallet
+                                // you could do it in the fetchBalances() function
                                 return true;
                               })
                               .map((token) => {
