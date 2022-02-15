@@ -113,6 +113,6 @@ Uses the `https://api-testnet.polygonscan.com/api?module=account&action=txlist` 
 
 Our endpoint can also take in an `endBlock` parameter. If this is not specified, it defaults to "99999999" which will result in us fetching the latest transactions. If it is specified, it will give the the latest transactions starting from the queried block number.
 
-# Thanks for reading
+## Thanks for reading
 
 If you want to check out the README for the `ContractOffsetter` contract, go [here](https://github.com/lazaralex98/eco-1/blob/main/README.md).
