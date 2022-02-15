@@ -1,42 +1,72 @@
-// TODO modify this to reflect the actual state of the dapp
+# A dapp to offset to the footprint of your wallet or contracts
 
-A dapp that calculates footprint on the frontend.
+We are using the `ContractOffsetter` contract for which [you have a repo here](https://github.com/lazaralex98/eco-1/blob/main/contracts/ContractOffsetter.sol), and you have [a link to its polygonscan here](https://mumbai.polygonscan.com/address/0x4F828CeDAfcBa0cDd2d9Ace14caFfb0b1FaF9199).
 
-User connects wallet and he gets to a dashboard that shows him his address and his balance sheet within the `ContractOffsetter` contract (any BCT, TCO2 that he may have deposited).
+In this README I will describe the dapp, for a [description of the contract itself go here](https://github.com/lazaralex98/eco-1/blob/main/README.md).
 
-In this dashboard, the user shall have a few options:
+## The user journey
 
-1. deposit BCT/TCO2
-2. redeem BCT for TCO2
-3. offset emissions
+The user comes in on the landing page and connects his wallet.
 
-The first 2 are fairly straightforward (I could have different pages for each), let's discuss #3.
+He is redirected to a dashboard where he has the options to load the transactions of the wallet he connected with, or go to another view.
 
-User clicks on "load my transactions" and a `loadTransactions()` function:
+One thing that happens behind the scenes when the user connects his wallet is that we fetch and load his token balances within `ContractOffsetter` and store these in an app-wide React state.
 
-1. loads (and renders) all his transactions
-2. parses all gas for these transactions
-3. multiplies that by an emission factor to get the overall_emmissions and renders this overall_emmissions as well
-   (I’ll use the 0.00000036 TCO2 per transaction number we came up with)
+### The dashboard view
 
-The user can also use a form to load transactions of another wallet/contract. (There could be a separate page for each address)
+Once the user clicks on "Load my transactions" the app fetches all the needed data (overall gas, overall emmissions, etc) and displays 3 parts:
 
-Once the user has a view of all transactions for his address of choice, he should have an "Offset All" btn that will run a `offsetAll()` function.
+1. A mini-form where the user can select a TCO2 (that he has in his in-contract balance) and click the "offsetAll" btn.
+   This would attempt to use the `offset()` method of the `ContractOffsetter` contract. Once that's done, we refetch the transactions and balances.
+2. A few stats: overall gas used from all transactions, the amount of CO2 in kg that's left to offset, and how much that'd cost in TCO2.
+   These numbers are acquired by using the `avg. transaction = 0.00036 kg of CO2` factor we came up with. Not the best number, as I said previously, but works for now.
+3. A table containing all transactions with the following for each: a hash with a link to polygonscan, the amount of gas used, the nonce, the transaction status, and wether it was offset or not.
+   We are using the Polygonscan API to get these, except for the `OffsetStatus`... that's something we get from the `ContractOffseter`.
 
-The `offsetAll()` function will interact with the `ContractOffsetter` contract to offset an amount of TCO2 equal to overall_emmissions.
+_Side note: `ContractOffsetter` does not contain an offset status for each transaction, it contains the nonce of the last offset transaction and that's how we differentiate between offset and not offset transactions._
 
-It's SUPER IMPORTANT to edit the contract such that it remembers which nonces were offset. I think a nested mapping in the contract could work. It could look like: `user/contract => (nonce => true/false)`. I think the `offset()` method in the contract would need to take in the nonces as an array of uints?
+### The offset view(s)
 
-This opens up the possibility to offset any one specific transaction or range of transactions. (I'm not going to build the UI for this yet, I think, but it's an option for the future)
+In big part, this is just repeating what was happening in the dashboard, only here the user can offset the transactions of other addresses.
 
-I think the emitted event of the `offset()` method should become a bit more intricate. It should have:
+By going to the `/offset` path (either from the navbar or using a btn in the dashboard), the user is presented with a form where he can input the address of the contract he wants to offset.
 
-1. the address that did the offsetting
-2. the address of the TCO2 that was used
-3. a uint representing how much was offset
-4. the address that had the offsetting done to it
-5. an array of the nonces that were offset
+This redirects him to `/offset/{address}` which is virtually the same as the dashboard view, except for the chosen address.
 
-All this does away with the `addContract()` and `addEvents()` methods.
+### The deposit view
 
-Things may change as I build, especially since I'm on a tight timeline.
+The deposit view has a form where the user can deposit BCT or TCO2. Which reminds me, to get a list of all eligible TCO2s we are using Subpgrah, but I shall explain these underlying functions/utils later.
+
+The deposit view also displays a table with all in-contract (in `ContractOffsetter` that is) balances of the connected wallet.
+
+The table only displays token that the user has within the contract, not all eligible tokens.
+
+Once the user picks the amount & token that he wants to deposit and he hits the "deposit" btn a function attempts to use the `deposit()` method of the `ContractOffsetter`. It's important to note that the user will have to first approve the transaction, then to actually sign the transaction from his Metamask. This happens because we are using the IERC20 `safeTransferFrom()` method.
+
+Of course, after the deposit is done, we refetch the balances.
+
+### The redeem view
+
+The redeem view is quite similar to the deposit one (a form + a balances table), except that this form will redeem BCT the user has within `ContractOffsetter` for TCO2 tokens of his choice.
+
+The selector only displays TCO2 tokens that the BCT pool actually currently holds. And we get this info (and store it in the app-wide React state) at the same times when we fetch the user's balances. Again, these functions will be explained more in-depth a bit later.
+
+### The balances table
+
+Since we already saw this in 2 view, I think we should quickly describe it. It takes the balances array from the app-wide React state and renders a table that contains the token address (with a link to polygonscan), the token symbol and it's full name + the amount that the user holds within the `ContractOffsetter`.
+
+### The help view
+
+Lastly, you will notice the help page. This (at the time of me writing this README) is empty, but it will be populated with information/content on how to use the dapp.
+
+## Behind the scenes
+
+There are quite a few functions, utils and API endpoints that need to be explained. Let's first enumerate them and then we'll explain them:
+
+- `fetchAndFormatTransactions()`
+- `fetchBalances()`
+- `fetchDepositableTokenTypes()`
+- `/api/getAllTCO2Types`
+- `/api/getTransactionsOfAddress`
+
+### fetchAndFormatTransactions()
