@@ -234,9 +234,8 @@ const Dashboard: NextPage = ({
                           // filter out BCT because you can only offset with TCO2
                           token.symbol != "BCT" &&
                           // filter out TCO2s where user hasn't deposited enough to cover overall footprint
-                          ethers.utils
-                            .parseEther(token.balance)
-                            .gt(ethers.utils.parseEther(emmissionsInTonnes))
+                          Number(token.balance) / 1000 >
+                            Number(emmissionsInTonnes)
                         );
                       })
                       .map((token) => {
