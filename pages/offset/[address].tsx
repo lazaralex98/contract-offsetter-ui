@@ -23,6 +23,7 @@ const Offset: NextPage = ({
   loading,
   setLoading,
   balances,
+  getAndStoreBalances,
 }: ifcPropsFromApp) => {
   const router = useRouter();
   const addressFromQuery =
@@ -184,6 +185,7 @@ const Offset: NextPage = ({
     } finally {
       setLoading(false);
       getAndStoreTransactions(addressFromQuery);
+      getAndStoreBalances();
     }
   };
 

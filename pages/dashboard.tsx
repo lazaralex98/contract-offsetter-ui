@@ -22,6 +22,7 @@ const Dashboard: NextPage = ({
   loading,
   setLoading,
   balances,
+  getAndStoreBalances,
 }: ifcPropsFromApp) => {
   // these are stats for after you load transactions
   const [transactions, setTransactions] = useState<
@@ -174,6 +175,7 @@ const Dashboard: NextPage = ({
     } finally {
       setLoading(false);
       getAndStoreTransactions(wallet);
+      getAndStoreBalances();
     }
   };
 
