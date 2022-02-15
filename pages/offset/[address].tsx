@@ -163,8 +163,7 @@ const Offset: NextPage = ({
           return ethers.utils.parseEther(transaction.nonce);
         });
 
-      const latestNotOffsetNonce =
-        noncesBigNumberish.at(-1) || ethers.utils.parseEther("0");
+      const latestNotOffsetNonce = noncesBigNumberish[0];
 
       // offset the transactions
       const offsetTxn = await co.offset(

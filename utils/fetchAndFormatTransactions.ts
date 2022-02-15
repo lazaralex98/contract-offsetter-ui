@@ -58,6 +58,7 @@ const fetchAndFormatTransactions = async (
           nonce: transaction.nonce,
           transactionStatus: transaction.txreceipt_status,
           // if the nonce of the last offset is bigger/equal than nonce, the transaction has been offset
+          // TODO there is an issue with this
           offsetStatus: Number(nonceOflastOffset) >= Number(transaction.nonce),
         };
         return formattedTransaction;
