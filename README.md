@@ -64,9 +64,25 @@ Lastly, you will notice the help page. This (at the time of me writing this READ
 There are quite a few functions, utils and API endpoints that need to be explained. Let's first enumerate them and then we'll explain them:
 
 - `fetchAndFormatTransactions()`
+- `fetchNonceOfLastOffset()`
 - `fetchBalances()`
 - `fetchDepositableTokenTypes()`
 - `/api/getAllTCO2Types`
 - `/api/getTransactionsOfAddress`
 
 ### fetchAndFormatTransactions()
+
+This function uses the `/api/getTransactionsOfAddress` endpoint to get a (blocknumber descendant) list of transactions of the queryied address.
+
+The endpoint can only return 10k Txns at a time, so I've made a recursive function (called within the `fetchAndFormatTransactions()` function) that checks whether we have hit that limit and re-fetches another list of Txns starting with the blocknumber of the earliest transaction (within the previous array).
+
+The recursive function will run and re-run until we don't hit the 10k limit anymore and this allows us to fetch all of someone's transactions even if it's over 10k Txns.
+
+_Side note: if the user has tens (or hundreds) of thousands of transactions this can become a pretty long loading screen for him_
+
+Once we have a list of all transactions, as fetched from Polygonscan (don't worry, I'll explain our endpoint later), we format them:
+
+- we filter out transactions where the data is incomplete (missing hashes, nonces, etc)
+- we check wether each transaction has been offset or not using the `nonceOflastOffset` which we get from the `fetchNonceOfLastOffset()` function
+
+I do acknowledge this function is a mess. A lot of stuff is a mess in this codebase. That's the perils of working on a tight deadline. We'll clean it up in time.
