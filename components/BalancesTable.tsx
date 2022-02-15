@@ -46,6 +46,7 @@ const BalancesTable = ({ balances }: { balances: ifcBalance[] }) => {
                 </thead>
                 <tbody>
                   {balances
+                    // filter out tokens that the user hasn't deposited yet to the ContractOffsetter
                     .filter((token) => token.balance != "0.0")
                     .map((token, index) => (
                       <tr

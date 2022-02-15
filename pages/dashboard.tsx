@@ -230,7 +230,7 @@ const Dashboard: NextPage = ({
                     {balances
                       ?.filter((token) => {
                         return (
-                          // filter out tokens where user doesn't have a balance
+                          // filter out tokens where user doesn't have a balance of in the ContractOffsetter
                           token.balance != "0.0" &&
                           // filter out BCT because you can only offset with TCO2
                           token.symbol != "BCT" &&

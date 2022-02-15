@@ -197,6 +197,7 @@ const Deposit: NextPage = ({
                             <option value="">Pick a token to deposit</option>
                             {balances
                               ?.filter((token) => {
+                                // TODO filter out tokens that the user doesn't have in his wallet
                                 return token.balance != "0.0";
                               })
                               .map((token) => {
