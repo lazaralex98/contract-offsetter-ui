@@ -112,3 +112,7 @@ Uses the `https://api.thegraph.com/subgraphs/name/co2ken/staging` GraphQL endpoi
 Uses the `https://api-testnet.polygonscan.com/api?module=account&action=txlist` REST API endpoint (from Polygonscan) to fetch (at most 10k) transactions based on the queried `address`.
 
 Our endpoint can also take in an `endBlock` parameter. If this is not specified, it defaults to "99999999" which will result in us fetching the latest transactions. If it is specified, it will give the the latest transactions starting from the queried block number.
+
+# Thanks for reading
+
+If you want to check out the README for the `ContractOffsetter` contract, go [here](https://github.com/lazaralex98/eco-1/blob/main/README.md).
