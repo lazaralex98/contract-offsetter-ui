@@ -198,7 +198,7 @@ const Deposit: NextPage = ({
                             {balances
                               ?.filter((token) => {
                                 // TODO filter out tokens that the user doesn't have in his wallet
-                                return token.balance != "0.0";
+                                return true;
                               })
                               .map((token) => {
                                 return (
@@ -206,7 +206,7 @@ const Deposit: NextPage = ({
                                     key={token.address}
                                     value={token.address}
                                   >
-                                    {token.symbol} (You have {token.balance})
+                                    {token.symbol}
                                   </option>
                                 );
                               })}
