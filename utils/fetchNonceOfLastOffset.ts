@@ -1,13 +1,12 @@
 import { ethers } from "ethers";
 import * as coAbi from "../contract-utils/ContractOffsetter.json";
+import { ContractOffsetter } from "../contract-utils/ContractOffsetter";
 
 /**
- * attempts to fetch the offset status of one transaction
  * @param address address of transaction owner
- * @param nonce nonce of transaction
- * @returns true/false (wether the transaction has been offset)
+ * @returns the nonce of the last offset transaction for this address
  */
-const fetchOffsetStatus = async (address: string, nonce: string) => {
+const fetchNonceOfLastOffset = async (address: string): Promise<string> => {
   try {
     // @ts-ignore
     const { ethereum } = window;
@@ -26,16 +25,16 @@ const fetchOffsetStatus = async (address: string, nonce: string) => {
       signer
     );
 
-    // get offset status of for the specified address for its specified nonce
-    const offsetStatus = await co.nonceStatuses(
-      address,
-      ethers.utils.parseEther(nonce)
+    // get last offset nonce of the specified address and make it a string
+    const lastOffsetNonce = ethers.utils.formatEther(
+      await co.lastOffsetNonce(address)
     );
 
-    return offsetStatus;
+    return lastOffsetNonce;
   } catch (error: any) {
-    console.error("error when fetching offset status", error);
+    console.error("error when fetching nonce of last offset", error);
+    return "0";
   }
 };
 
-export default fetchOffsetStatus;
+export default fetchNonceOfLastOffset;

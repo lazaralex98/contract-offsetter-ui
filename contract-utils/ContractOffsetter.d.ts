@@ -25,8 +25,8 @@ interface ContractOffsetterInterface extends ethers.utils.Interface {
     "bctAddress()": FunctionFragment;
     "contractRegistry()": FunctionFragment;
     "deposit(address,uint256)": FunctionFragment;
-    "nonceStatuses(address,uint256)": FunctionFragment;
-    "offset(address,uint256,address,uint256[])": FunctionFragment;
+    "lastOffsetNonce(address)": FunctionFragment;
+    "offset(address,uint256,address,uint256)": FunctionFragment;
     "owner()": FunctionFragment;
     "redeemBCT(address,uint256)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
@@ -51,12 +51,12 @@ interface ContractOffsetterInterface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "nonceStatuses",
-    values: [string, BigNumberish]
+    functionFragment: "lastOffsetNonce",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "offset",
-    values: [string, BigNumberish, string, BigNumberish[]]
+    values: [string, BigNumberish, string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -84,7 +84,7 @@ interface ContractOffsetterInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "nonceStatuses",
+    functionFragment: "lastOffsetNonce",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "offset", data: BytesLike): Result;
@@ -105,7 +105,7 @@ interface ContractOffsetterInterface extends ethers.utils.Interface {
 
   events: {
     "Deposited(address,address,uint256)": EventFragment;
-    "Offset(address,address,uint256,address,uint256[])": EventFragment;
+    "Offset(address,address,uint256,address,uint256)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "Redeemed(address,address,uint256)": EventFragment;
   };
@@ -125,12 +125,12 @@ export type DepositedEvent = TypedEvent<
 >;
 
 export type OffsetEvent = TypedEvent<
-  [string, string, BigNumber, string, BigNumber[]] & {
+  [string, string, BigNumber, string, BigNumber] & {
     offsetter: string;
     retiredTCO2: string;
     amountOffset: BigNumber;
     offsetAddress: string;
-    offsetNonces: BigNumber[];
+    latestOffsetNonce: BigNumber;
   }
 >;
 
@@ -206,17 +206,16 @@ export class ContractOffsetter extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    nonceStatuses(
+    lastOffsetNonce(
       arg0: string,
-      arg1: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[boolean]>;
+    ): Promise<[BigNumber]>;
 
     offset(
       _tco2Address: string,
       _amount: BigNumberish,
-      offsetAddress: string,
-      offsetNonces: BigNumberish[],
+      _offsetAddress: string,
+      _nonce: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -259,17 +258,13 @@ export class ContractOffsetter extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  nonceStatuses(
-    arg0: string,
-    arg1: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
+  lastOffsetNonce(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   offset(
     _tco2Address: string,
     _amount: BigNumberish,
-    offsetAddress: string,
-    offsetNonces: BigNumberish[],
+    _offsetAddress: string,
+    _nonce: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -312,17 +307,16 @@ export class ContractOffsetter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    nonceStatuses(
+    lastOffsetNonce(
       arg0: string,
-      arg1: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<boolean>;
+    ): Promise<BigNumber>;
 
     offset(
       _tco2Address: string,
       _amount: BigNumberish,
-      offsetAddress: string,
-      offsetNonces: BigNumberish[],
+      _offsetAddress: string,
+      _nonce: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -366,20 +360,20 @@ export class ContractOffsetter extends BaseContract {
       { depositor: string; erc20Address: string; amountDeposited: BigNumber }
     >;
 
-    "Offset(address,address,uint256,address,uint256[])"(
+    "Offset(address,address,uint256,address,uint256)"(
       offsetter?: null,
       retiredTCO2?: null,
       amountOffset?: null,
       offsetAddress?: null,
-      offsetNonces?: null
+      latestOffsetNonce?: null
     ): TypedEventFilter<
-      [string, string, BigNumber, string, BigNumber[]],
+      [string, string, BigNumber, string, BigNumber],
       {
         offsetter: string;
         retiredTCO2: string;
         amountOffset: BigNumber;
         offsetAddress: string;
-        offsetNonces: BigNumber[];
+        latestOffsetNonce: BigNumber;
       }
     >;
 
@@ -388,15 +382,15 @@ export class ContractOffsetter extends BaseContract {
       retiredTCO2?: null,
       amountOffset?: null,
       offsetAddress?: null,
-      offsetNonces?: null
+      latestOffsetNonce?: null
     ): TypedEventFilter<
-      [string, string, BigNumber, string, BigNumber[]],
+      [string, string, BigNumber, string, BigNumber],
       {
         offsetter: string;
         retiredTCO2: string;
         amountOffset: BigNumber;
         offsetAddress: string;
-        offsetNonces: BigNumber[];
+        latestOffsetNonce: BigNumber;
       }
     >;
 
@@ -452,17 +446,16 @@ export class ContractOffsetter extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    nonceStatuses(
+    lastOffsetNonce(
       arg0: string,
-      arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     offset(
       _tco2Address: string,
       _amount: BigNumberish,
-      offsetAddress: string,
-      offsetNonces: BigNumberish[],
+      _offsetAddress: string,
+      _nonce: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -506,17 +499,16 @@ export class ContractOffsetter extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    nonceStatuses(
+    lastOffsetNonce(
       arg0: string,
-      arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     offset(
       _tco2Address: string,
       _amount: BigNumberish,
-      offsetAddress: string,
-      offsetNonces: BigNumberish[],
+      _offsetAddress: string,
+      _nonce: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

@@ -11,7 +11,6 @@ import * as coAbi from "../contract-utils/ContractOffsetter.json";
 import { ContractOffsetter } from "../contract-utils/ContractOffsetter";
 import ConnectWalletAlert from "../components/ConnectWalletAlert";
 import ifcPropsFromApp from "../utils/ifcPropsFromApp";
-import fetchOffsetStatus from "../utils/fetchOffsetStatus";
 import fetchAndFormatTransactions from "../utils/fetchAndFormatTransactions";
 import { ifcFormattedTransaction } from "../utils/ifcTransaction";
 import TransactionsTable from "../components/TransactionsTable";
@@ -154,12 +153,15 @@ const Dashboard: NextPage = ({
           return ethers.utils.parseEther(transaction.nonce);
         });
 
-      // get offset status of for the specified address for its specified nonce
+      const latestNotOffsetNonce =
+        noncesBigNumberish.at(-1) || ethers.utils.parseEther("0");
+
+      // offset the transactions
       const offsetTxn = await co.offset(
         token,
         ethers.utils.parseEther(emmissionsInTonnes),
         wallet,
-        noncesBigNumberish
+        latestNotOffsetNonce
       );
       await offsetTxn.wait();
       console.log("offset hash", offsetTxn.hash);
@@ -168,7 +170,7 @@ const Dashboard: NextPage = ({
         toastOptions
       );
     } catch (error: any) {
-      console.error("error when fetching offset status", error);
+      console.error("error when offseting footprint", error);
       toast.error(error.message, toastOptions);
     } finally {
       setLoading(false);

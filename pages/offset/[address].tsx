@@ -11,10 +11,10 @@ import * as coAbi from "../../contract-utils/ContractOffsetter.json";
 import AppNavbar from "../../components/AppNavbar";
 import ConnectWalletAlert from "../../components/ConnectWalletAlert";
 import { Loader } from "../../components/Loader";
-import fetchOffsetStatus from "../../utils/fetchOffsetStatus";
 import fetchAndFormatTransactions from "../../utils/fetchAndFormatTransactions";
 import { ifcFormattedTransaction } from "../../utils/ifcTransaction";
 import TransactionsTable from "../../components/TransactionsTable";
+import { ContractOffsetter } from "../../contract-utils/ContractOffsetter";
 
 // @ts-ignore some type props BS i don't have the time to look into right now
 const Offset: NextPage = ({
@@ -163,12 +163,15 @@ const Offset: NextPage = ({
           return ethers.utils.parseEther(transaction.nonce);
         });
 
-      // get offset status of for the specified address for its specified nonce
+      const latestNotOffsetNonce =
+        noncesBigNumberish.at(-1) || ethers.utils.parseEther("0");
+
+      // offset the transactions
       const offsetTxn = await co.offset(
         token,
         ethers.utils.parseEther(emmissionsInTonnes),
         addressFromQuery,
-        noncesBigNumberish
+        latestNotOffsetNonce
       );
       await offsetTxn.wait();
       console.log("offset hash", offsetTxn.hash);
@@ -177,7 +180,7 @@ const Offset: NextPage = ({
         toastOptions
       );
     } catch (error: any) {
-      console.error("error when fetching offset status", error);
+      console.error("error when offseting footprint", error);
       toast.error(error.message, toastOptions);
     } finally {
       setLoading(false);

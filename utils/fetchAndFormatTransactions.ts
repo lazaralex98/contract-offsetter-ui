@@ -1,4 +1,4 @@
-import fetchOffsetStatus from "./fetchOffsetStatus";
+import fetchNonceOfLastOffset from "./fetchNonceOfLastOffset";
 import { ifcFormattedTransaction, ifcTransaction } from "./ifcTransaction";
 
 const fetchAndFormatTransactions = async (
@@ -38,6 +38,8 @@ const fetchAndFormatTransactions = async (
   };
   await recursiveFunction(allTransactions);
 
+  const nonceOflastOffset = await fetchNonceOfLastOffset(address);
+
   const formattedTransactions: ifcFormattedTransaction[] = await Promise.all(
     allTransactions
       .filter((transaction) => {
@@ -50,16 +52,13 @@ const fetchAndFormatTransactions = async (
         );
       })
       .map(async (transaction: ifcTransaction) => {
-        // TODO use a nonceOflastOffset instead of having a status for each transaction
-        const nonceOflastOffset = await fetchNonceOfLastOffset(address);
-
         const formattedTransaction: ifcFormattedTransaction = {
           hash: transaction.hash,
           gasUsed: transaction.gasUsed,
           nonce: transaction.nonce,
           transactionStatus: transaction.txreceipt_status,
           // if the nonce of the last offset is bigger/equal than nonce, the transaction has been offset
-          offsetStatus: nonceOflastOffset >= transaction.nonce,
+          offsetStatus: Number(nonceOflastOffset) >= Number(transaction.nonce),
         };
         return formattedTransaction;
       })
