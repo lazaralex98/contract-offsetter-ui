@@ -86,3 +86,29 @@ Once we have a list of all transactions, as fetched from Polygonscan (don't worr
 - we check wether each transaction has been offset or not using the `nonceOflastOffset` which we get from the `fetchNonceOfLastOffset()` function
 
 I do acknowledge this function is a mess. A lot of stuff is a mess in this codebase. That's the perils of working on a tight deadline. We'll clean it up in time.
+
+### fetchNonceOfLastOffset()
+
+This function is fairly straightforward, it interacts with the `ContractOffsetter` to fetch the nonce of the last transaction that has been offset.
+
+### fetchBalances()
+
+This function takes in a list of all eligible token types (containing address, name and symbol), then, for each, it fetches the balance of the user within `ContractOffsetter` and the balance of said token within the BCT pool.
+
+It returns an array of `balances`, each balance containing: a token address, a name, and a symbol, the amount the user holds within `ContractOffsetter` and the amount that exists within the BCT pool for said token.
+
+_Side note: probably not the best naming `balances`, I know, but it shall work for now. I do intent to clean up a lot of this after I implement automated tests_
+
+### fetchDepositableTokenTypes()
+
+This function uses the `/api/getAllTCO2Types` endpoint (which uses The Graph) to fetch an array of all eligible TCO2 tokens. Each token will have: a name, a symbol, an address. And it uses a spread operator to add the BCT token to the returned array.
+
+### /api/getAllTCO2Types
+
+Uses the `https://api.thegraph.com/subgraphs/name/co2ken/staging` GraphQL endpoint (from The Graph) to query TCO2 tokens for name, symbol and address effectively giving us a list of all eligible TCO2 tokens.
+
+### /api/getTransactionsOfAddress
+
+Uses the `https://api-testnet.polygonscan.com/api?module=account&action=txlist` REST API endpoint (from Polygonscan) to fetch (at most 10k) transactions based on the queried `address`.
+
+Our endpoint can also take in an `endBlock` parameter. If this is not specified, it defaults to "99999999" which will result in us fetching the latest transactions. If it is specified, it will give the the latest transactions starting from the queried block number.
