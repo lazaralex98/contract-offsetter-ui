@@ -5,10 +5,15 @@ const fetchAndFormatTransactions = async (
   address: string
 ): Promise<ifcFormattedTransaction[]> => {
   // fetch transactions (there's a 10k Txn limit)
-  let response = await fetch(
-    `/api/getTransactionsOfAddress?address=${address}`
-  );
+  let response = await fetch(`/api/getTransactionsOfAddress`, {
+    method: "POST",
+    body: JSON.stringify({ address: address, endBlock: "99999999" }),
+    headers: {
+      "Content-Type": "application/json; charset=UTF-8",
+    },
+  });
   let data: any = await response.json();
+  console.log("POST", data);
   if (data.message != "OK") throw new Error(data.message);
 
   /**
@@ -21,11 +26,16 @@ const fetchAndFormatTransactions = async (
     // if the length is a multiple of 10k, it means the last fetch hit the limit
     if (initialTransactions.length % 10000 == 0) {
       // fetch
-      let response = await fetch(
-        `/api/getTransactionsOfAddress?address=${address}&endBlock=${
-          initialTransactions.at(-1)?.blockNumber
-        }`
-      );
+      let response = await fetch(`/api/getTransactionsOfAddress`, {
+        method: "POST",
+        body: JSON.stringify({
+          address: address,
+          endBlock: initialTransactions.at(-1)?.blockNumber,
+        }),
+        headers: {
+          "Content-Type": "application/json; charset=UTF-8",
+        },
+      });
       let data: any = await response.json();
       if (data.message != "OK") throw new Error(data.message);
 

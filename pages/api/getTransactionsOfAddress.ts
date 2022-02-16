@@ -20,8 +20,7 @@ export default async function handler(
     return data;
   };
 
-  const address = req.query["address"];
-  const endBlock = req.query["endBlock"] || "99999999";
+  const { address, endBlock } = req.body;
 
   if (!address) {
     res.status(500).json({ message: "You need to provide a valid address." });
