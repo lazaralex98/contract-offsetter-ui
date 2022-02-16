@@ -46,6 +46,7 @@ const fetchBalances = async (
       return { ...tokenType, balance, bctPoolBalance };
     })
   );
+  // TODO sometimes there is an "unexpedted error '<' in JSON position 0" or something like that. Might be from here
   return balances;
 };
 
