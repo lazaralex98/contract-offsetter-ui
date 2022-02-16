@@ -3,7 +3,7 @@ interface ifcBalance {
   address: string;
   name: string;
   symbol: string;
-  balance: string;
+  balance: string; // in tonnes
   bctPoolBalance: string;
 }
 

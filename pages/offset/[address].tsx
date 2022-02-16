@@ -251,8 +251,7 @@ const Offset: NextPage = ({
                           // filter out BCT because you can only offset with TCO2
                           token.symbol != "BCT" &&
                           // filter out TCO2s where user hasn't deposited enough to cover overall footprint
-                          Number(token.balance) / 1000 >
-                            Number(emmissionsInTonnes)
+                          Number(token.balance) > Number(emmissionsInTonnes)
                         );
                       })
                       .map((token) => {
