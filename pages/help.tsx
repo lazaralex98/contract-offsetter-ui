@@ -1,11 +1,47 @@
+import { Disclosure } from "@headlessui/react";
+import { ChevronDownIcon } from "@heroicons/react/outline";
 import type { NextPage } from "next";
 import Head from "next/head";
+import Image from "next/image";
 import AppNavbar from "../components/AppNavbar";
 import ConnectWalletAlert from "../components/ConnectWalletAlert";
 import { Loader } from "../components/Loader";
 import ifcPropsFromApp from "../utils/ifcPropsFromApp";
 
-// TODO make page
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(" ");
+}
+
+// TODO write these
+const faqs = [
+  {
+    question: "What's the expected flow I should go through?",
+    answer:
+      "I don't know, but the flag is a big plus. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas cupiditate laboriosam fugiat.",
+    image: "",
+  },
+  {
+    question: "How do I deposit?",
+    answer: "lorem ipsum",
+    image: "",
+  },
+  {
+    question: "How do I redeem?",
+    answer: "lorem ipsum",
+    image: "",
+  },
+  {
+    question: "How do I offset?",
+    answer: "lorem ipsum",
+    image: "",
+  },
+  {
+    question: "How do I offset other contracts?",
+    answer: "lorem ipsum",
+    image: "",
+  },
+];
+
 // @ts-ignore some type props BS i don't have the time to look into right now
 const Help: NextPage = ({
   wallet,
@@ -35,8 +71,6 @@ const Help: NextPage = ({
     return <ConnectWalletAlert connectWallet={connectWallet} />;
   }
 
-  // TODO when you're done with the dapp, make content explaining how to use it
-
   return (
     <>
       <Head>
@@ -49,18 +83,49 @@ const Help: NextPage = ({
           navigation={navigation}
         />
         <div className="py-10">
-          <header>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <h1 className="text-3xl font-bold leading-tight text-gray-900">
-                Help
-              </h1>
-            </div>
-          </header>
           <main>
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
               {/* Replace with your content */}
-              <div className="px-4 py-8 sm:px-0">
-                <div className="border-4 border-dashed border-gray-200 rounded-lg h-96" />
+              <div className="px-4 py-8 sm:px-0  divide-y-2 divide-gray-200">
+                <h2 className="text-center text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                  Help
+                </h2>
+                <dl className="mt-6 space-y-6 divide-y divide-gray-200">
+                  {faqs.map((faq) => (
+                    <Disclosure as="div" key={faq.question} className="pt-6">
+                      {({ open }) => (
+                        <>
+                          <dt className="text-lg">
+                            <Disclosure.Button className="text-left w-full flex justify-between items-start text-gray-400">
+                              <span className="font-medium text-gray-900">
+                                {faq.question}
+                              </span>
+                              <span className="ml-6 h-7 flex items-center">
+                                <ChevronDownIcon
+                                  className={classNames(
+                                    open ? "-rotate-180" : "rotate-0",
+                                    "h-6 w-6 transform"
+                                  )}
+                                  aria-hidden="true"
+                                />
+                              </span>
+                            </Disclosure.Button>
+                          </dt>
+                          <Disclosure.Panel as="dd" className="mt-2 pr-12">
+                            <p className="text-base text-gray-500">
+                              {faq.answer}
+                            </p>
+                            {faq.image && faq.image != "" ? (
+                              <Image src={faq.image} width={600} height={400} />
+                            ) : (
+                              ""
+                            )}
+                          </Disclosure.Panel>
+                        </>
+                      )}
+                    </Disclosure>
+                  ))}
+                </dl>
               </div>
               {/* /End replace */}
             </div>
