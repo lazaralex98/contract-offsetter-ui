@@ -14,6 +14,7 @@ import ifcPropsFromApp from "../utils/ifcPropsFromApp";
 import fetchAndFormatTransactions from "../utils/fetchAndFormatTransactions";
 import { ifcFormattedTransaction } from "../utils/ifcTransaction";
 import TransactionsTable from "../components/TransactionsTable";
+import fetchOverallOffsetAmount from "../utils/fetchOverallOffsetAmount";
 
 // @ts-ignore some type props BS i don't have the time to look into right now
 const Dashboard: NextPage = ({
@@ -29,8 +30,12 @@ const Dashboard: NextPage = ({
     ifcFormattedTransaction[] | null
   >(null);
   const [overallGas, setOverallGas] = useState<number>(0);
+  // emmissions in kg
   const [overallEmmissions, setOverallEmmissions] = useState<number>(0);
+  // emmissions in tonnes
   const [emmissionsInTonnes, setEmmissionsInTonnes] = useState<string>("0");
+  // overall footprint that user has offset up until now
+  const [overallOffsetAmount, setOverallOffsetAmount] = useState<string>("0");
 
   // this is for the form
   const [token, setToken] = useState<string>("");
@@ -61,6 +66,10 @@ const Dashboard: NextPage = ({
 
       calculateOverallGas(formattedTransactions);
       calculateOverallFootprint(formattedTransactions);
+
+      // fetch overallOffsetAmount
+      const offsetAmount = await fetchOverallOffsetAmount(wallet);
+      setOverallOffsetAmount(offsetAmount);
 
       setTransactions(formattedTransactions);
     } catch (error: any) {
@@ -269,30 +278,37 @@ const Dashboard: NextPage = ({
                 {/* show overall gas and emmissions stats */}
                 {overallGas || overallEmmissions ? (
                   <div className="mb-6">
-                    <dl className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+                    <dl className="grid grid-cols-1 gap-5 sm:grid-cols-4">
                       <div className="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
                         <dt className="text-sm font-medium text-gray-500 truncate">
                           Overall Gas Used (All transactions)
                         </dt>
                         <dd className="mt-1 text-3xl font-semibold text-gray-900">
-                          {Intl.NumberFormat("en-US").format(overallGas) + " "}
-                          wei
+                          {Intl.NumberFormat("en-US").format(overallGas)}
                         </dd>
                       </div>
                       <div className="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
                         <dt className="text-sm font-medium text-gray-500 truncate">
-                          CO2 Left To Offset
+                          Your Historic Offsets (TCO2)
                         </dt>
                         <dd className="mt-1 text-3xl font-semibold text-gray-900">
-                          {overallEmmissions} kg
+                          ~ {overallOffsetAmount}
                         </dd>
                       </div>
                       <div className="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
                         <dt className="text-sm font-medium text-gray-500 truncate">
-                          Left To Offset
+                          CO2 Left To Offset (kg)
                         </dt>
                         <dd className="mt-1 text-3xl font-semibold text-gray-900">
-                          ~ {emmissionsInTonnes} TCO2
+                          {overallEmmissions}
+                        </dd>
+                      </div>
+                      <div className="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
+                        <dt className="text-sm font-medium text-gray-500 truncate">
+                          Left To Offset (TCO2)
+                        </dt>
+                        <dd className="mt-1 text-3xl font-semibold text-gray-900">
+                          ~ {emmissionsInTonnes}
                         </dd>
                       </div>
                     </dl>

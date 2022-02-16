@@ -27,6 +27,7 @@ interface ContractOffsetterInterface extends ethers.utils.Interface {
     "deposit(address,uint256)": FunctionFragment;
     "lastOffsetNonce(address)": FunctionFragment;
     "offset(address,uint256,address,uint256)": FunctionFragment;
+    "overallOffsetAmount(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "redeemBCT(address,uint256)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
@@ -58,6 +59,10 @@ interface ContractOffsetterInterface extends ethers.utils.Interface {
     functionFragment: "offset",
     values: [string, BigNumberish, string, BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "overallOffsetAmount",
+    values: [string]
+  ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "redeemBCT",
@@ -88,6 +93,10 @@ interface ContractOffsetterInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "offset", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "overallOffsetAmount",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "redeemBCT", data: BytesLike): Result;
   decodeFunctionResult(
@@ -219,6 +228,11 @@ export class ContractOffsetter extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    overallOffsetAmount(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     owner(overrides?: CallOverrides): Promise<[string]>;
 
     redeemBCT(
@@ -267,6 +281,11 @@ export class ContractOffsetter extends BaseContract {
     _nonce: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  overallOffsetAmount(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
@@ -319,6 +338,11 @@ export class ContractOffsetter extends BaseContract {
       _nonce: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    overallOffsetAmount(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
@@ -459,6 +483,11 @@ export class ContractOffsetter extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    overallOffsetAmount(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     redeemBCT(
@@ -510,6 +539,11 @@ export class ContractOffsetter extends BaseContract {
       _offsetAddress: string,
       _nonce: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    overallOffsetAmount(
+      arg0: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
