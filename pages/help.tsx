@@ -3,44 +3,16 @@ import { ChevronDownIcon } from "@heroicons/react/outline";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
+import Link from "next/link";
 import AppNavbar from "../components/AppNavbar";
 import ConnectWalletAlert from "../components/ConnectWalletAlert";
 import { Loader } from "../components/Loader";
+import YouTubeEmbed from "../components/YouTubeEmbed";
 import ifcPropsFromApp from "../utils/ifcPropsFromApp";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
-
-// TODO write these
-const faqs = [
-  {
-    question: "What's the expected flow I should go through?",
-    answer:
-      "I don't know, but the flag is a big plus. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas cupiditate laboriosam fugiat.",
-    image: "",
-  },
-  {
-    question: "How do I deposit?",
-    answer: "lorem ipsum",
-    image: "",
-  },
-  {
-    question: "How do I redeem?",
-    answer: "lorem ipsum",
-    image: "",
-  },
-  {
-    question: "How do I offset?",
-    answer: "lorem ipsum",
-    image: "",
-  },
-  {
-    question: "How do I offset other contracts?",
-    answer: "lorem ipsum",
-    image: "",
-  },
-];
 
 // @ts-ignore some type props BS i don't have the time to look into right now
 const Help: NextPage = ({
@@ -91,40 +63,121 @@ const Help: NextPage = ({
                   Help
                 </h2>
                 <dl className="mt-6 space-y-6 divide-y divide-gray-200">
-                  {faqs.map((faq) => (
-                    <Disclosure as="div" key={faq.question} className="pt-6">
-                      {({ open }) => (
-                        <>
-                          <dt className="text-lg">
-                            <Disclosure.Button className="text-left w-full flex justify-between items-start text-gray-400">
-                              <span className="font-medium text-gray-900">
-                                {faq.question}
-                              </span>
-                              <span className="ml-6 h-7 flex items-center">
-                                <ChevronDownIcon
-                                  className={classNames(
-                                    open ? "-rotate-180" : "rotate-0",
-                                    "h-6 w-6 transform"
-                                  )}
-                                  aria-hidden="true"
-                                />
-                              </span>
-                            </Disclosure.Button>
-                          </dt>
-                          <Disclosure.Panel as="dd" className="mt-2 pr-12">
-                            <p className="text-base text-gray-500">
-                              {faq.answer}
-                            </p>
-                            {faq.image && faq.image != "" ? (
-                              <Image src={faq.image} width={600} height={400} />
-                            ) : (
-                              ""
-                            )}
-                          </Disclosure.Panel>
-                        </>
-                      )}
-                    </Disclosure>
-                  ))}
+                  <Disclosure as="div" className="pt-6">
+                    {({ open }) => (
+                      <>
+                        <dt className="text-lg">
+                          <Disclosure.Button className="text-left w-full flex justify-between items-start text-gray-400">
+                            <span className="font-medium text-gray-900">
+                              Can I see a demo?
+                            </span>
+                            <span className="ml-6 h-7 flex items-center">
+                              <ChevronDownIcon
+                                className={classNames(
+                                  open ? "-rotate-180" : "rotate-0",
+                                  "h-6 w-6 transform"
+                                )}
+                                aria-hidden="true"
+                              />
+                            </span>
+                          </Disclosure.Button>
+                        </dt>
+                        <Disclosure.Panel as="dd" className="mt-2 pr-12">
+                          <p className="text-base text-gray-500">
+                            Of course, I have made a walkthrough + explanation
+                            of how to use the app right here:
+                          </p>
+                          <YouTubeEmbed embedId="LADN-Vt8Khw" />
+                        </Disclosure.Panel>
+                      </>
+                    )}
+                  </Disclosure>
+                </dl>
+                <dl className="mt-6 space-y-6 divide-y divide-gray-200">
+                  <Disclosure as="div" className="pt-6">
+                    {({ open }) => (
+                      <>
+                        <dt className="text-lg">
+                          <Disclosure.Button className="text-left w-full flex justify-between items-start text-gray-400">
+                            <span className="font-medium text-gray-900">
+                              Can I see the repo / documentation of how all this
+                              works?
+                            </span>
+                            <span className="ml-6 h-7 flex items-center">
+                              <ChevronDownIcon
+                                className={classNames(
+                                  open ? "-rotate-180" : "rotate-0",
+                                  "h-6 w-6 transform"
+                                )}
+                                aria-hidden="true"
+                              />
+                            </span>
+                          </Disclosure.Button>
+                        </dt>
+                        <Disclosure.Panel as="dd" className="mt-2 pr-12">
+                          <p className="text-base text-gray-500">
+                            Yes! Here is a{" "}
+                            <Link href="https://github.com/lazaralex98/eco-1">
+                              <a className="text-pink-600 hover:text-pink-900">
+                                link to the repo of the contract
+                              </a>
+                            </Link>{" "}
+                            and here a{" "}
+                            <Link href="https://github.com/lazaralex98/contract-offsetter-ui">
+                              <a className="text-pink-600 hover:text-pink-900">
+                                link to the repo of this dapp
+                              </a>
+                            </Link>
+                            . Both repos have READMEs explaining how it all
+                            works.
+                          </p>
+                        </Disclosure.Panel>
+                      </>
+                    )}
+                  </Disclosure>
+                </dl>
+                <dl className="mt-6 space-y-6 divide-y divide-gray-200">
+                  <Disclosure as="div" className="pt-6">
+                    {({ open }) => (
+                      <>
+                        <dt className="text-lg">
+                          <Disclosure.Button className="text-left w-full flex justify-between items-start text-gray-400">
+                            <span className="font-medium text-gray-900">
+                              Can I see the contract's Polygonscan?
+                            </span>
+                            <span className="ml-6 h-7 flex items-center">
+                              <ChevronDownIcon
+                                className={classNames(
+                                  open ? "-rotate-180" : "rotate-0",
+                                  "h-6 w-6 transform"
+                                )}
+                                aria-hidden="true"
+                              />
+                            </span>
+                          </Disclosure.Button>
+                        </dt>
+                        <Disclosure.Panel as="dd" className="mt-2 pr-12">
+                          <p className="text-base text-gray-500">
+                            Here you go:{" "}
+                            <Link
+                              href={
+                                process.env
+                                  .NEXT_PUBLIC_CONTRACT_OFFSETTER_ADDRESS_MUMBAI ||
+                                ""
+                              }
+                            >
+                              <a className="text-pink-600 hover:text-pink-900">
+                                {
+                                  process.env
+                                    .NEXT_PUBLIC_CONTRACT_OFFSETTER_ADDRESS_MUMBAI
+                                }
+                              </a>
+                            </Link>
+                          </p>
+                        </Disclosure.Panel>
+                      </>
+                    )}
+                  </Disclosure>
                 </dl>
               </div>
               {/* /End replace */}
