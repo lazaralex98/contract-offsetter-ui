@@ -8,6 +8,7 @@ interface ifcTokenType {
 const fetchDepositableTokenTypes = async (): Promise<ifcTokenType[]> => {
   const response = await fetch(`/api/getAllTCO2Types`);
   const data: any = await response.json();
+  if (data.message != "OK") throw new Error(data.message);
 
   // preparing tokens to check/display in an easily formattable way
   const tokensToCheck = [

@@ -26,11 +26,11 @@ export default async function handler(
     query: tokensQuery,
   });
 
-  console.log(response);
+  console.log("getAllTCO2Types response", response);
 
   if (response.networkStatus == 7) {
     res.status(200).json(response.data.tco2Tokens);
   } else {
-    res.status(500).json(response);
+    res.status(500).json({ message: "NOT OK", data: response });
   }
 }
