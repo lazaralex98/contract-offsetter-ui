@@ -41,13 +41,17 @@ const AppNavbar = ({
             <div className="flex justify-between h-16">
               <div className="flex">
                 <div className="flex-shrink-0 flex items-center">
-                  <Image
-                    src="/tc_onBright_logo.svg"
-                    height={128}
-                    width={128}
-                    className="block lg:hidden h-8 w-auto"
-                    alt="Toucan Logo"
-                  />
+                  <Link href="https://toucan.earth">
+                    <a>
+                      <Image
+                        src="/tc_onBright_logo.svg"
+                        height={128}
+                        width={128}
+                        className="block lg:hidden h-8 w-auto"
+                        alt="Toucan Logo"
+                      />
+                    </a>
+                  </Link>
                 </div>
                 <div className="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
                   {navigation.map((item) => (
