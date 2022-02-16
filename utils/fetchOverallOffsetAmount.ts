@@ -21,8 +21,6 @@ const fetchOverallOffsetAmount = async (address: string) => {
       signer
     );
 
-    console.log(`attempting to fetch offset amount for ${address}`);
-
     // get the overallOffsetAmount of the address
     const offsetAmount = ethers.utils.formatEther(
       await co.overallOffsetAmount(address)
