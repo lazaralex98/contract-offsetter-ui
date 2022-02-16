@@ -12,7 +12,7 @@ const fetchDepositableTokenTypes = async (): Promise<ifcTokenType[]> => {
 
   // preparing tokens to check/display in an easily formattable way
   const tokensToCheck = [
-    ...data,
+    ...data.data,
     {
       __typename: "BaseCarbonTonne",
       address: process.env.NEXT_PUBLIC_BCT_ADDRESS_MUMBAI,
