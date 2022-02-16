@@ -35,6 +35,8 @@ function MyApp({ Component, pageProps }: AppProps) {
         method: "eth_requestAccounts",
       });
 
+      // TODO issue accounts lowercases the address
+      console.log("accounts", accounts);
       setWallet(accounts[0]);
     } catch (error: any) {
       console.error("error when connecting wallet", error);

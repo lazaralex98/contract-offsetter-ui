@@ -28,13 +28,14 @@ export default async function handler(
 
   // @ts-ignore
   const data: any = await fetchTransactionsOfAddress(address, endBlock);
+  console.log("data from fetchTransactionsOfAddress", data);
 
   if (data.message != "OK") {
     res.status(500).json({
       message: "Some error occurred when fetching from PolygonScan.",
       data: data,
     });
+  } else {
+    res.status(200).json({ message: "OK", data: data });
   }
-
-  res.status(200).json({ message: "OK", data: data });
 }
