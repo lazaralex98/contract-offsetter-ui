@@ -32,7 +32,7 @@ export default async function handler(
 
   if (data.message != "OK") {
     res.status(500).json({
-      message: "Some error occurred when fetching from PolygonScan.",
+      message: data.message,
       data: data,
     });
   } else {
