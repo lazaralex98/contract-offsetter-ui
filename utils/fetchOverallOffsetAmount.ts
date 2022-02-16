@@ -21,10 +21,11 @@ const fetchOverallOffsetAmount = async (address: string) => {
       signer
     );
 
-    // get last offset nonce of the specified address and make it a string
+    // get the overallOffsetAmount of the address
     const offsetAmount = ethers.utils.formatEther(
       await co.overallOffsetAmount(address)
     );
+    console.log("offset amount: ", offsetAmount);
 
     return offsetAmount;
   } catch (error: any) {

@@ -26,6 +26,7 @@ export default async function handler(
     res.status(500).json({ message: "You need to provide a valid address." });
   }
 
+  console.log("address, endBlock", address, endBlock);
   // @ts-ignore
   const data: any = await fetchTransactionsOfAddress(address, endBlock);
   console.log("data from fetchTransactionsOfAddress", data);
