@@ -143,7 +143,7 @@ const Help: NextPage = ({
                         <dt className="text-lg">
                           <Disclosure.Button className="text-left w-full flex justify-between items-start text-gray-400">
                             <span className="font-medium text-gray-900">
-                              Can I see the contract's Polygonscan?
+                              Can I see the contract&lsquo;s Polygonscan?
                             </span>
                             <span className="ml-6 h-7 flex items-center">
                               <ChevronDownIcon
