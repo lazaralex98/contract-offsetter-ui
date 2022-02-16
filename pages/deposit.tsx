@@ -98,7 +98,7 @@ const Deposit: NextPage = ({
 
       console.log("deposit hash", depositTxn.hash);
 
-      toast(`You deposited ${amount} TCO2s`, toastOptions);
+      toast(`Your deposit was a success`, toastOptions);
     } catch (error: any) {
       console.error("error when depositing", error);
       toast.error(error.message, toastOptions);
