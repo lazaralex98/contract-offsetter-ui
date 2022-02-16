@@ -223,7 +223,7 @@ const Offset: NextPage = ({
               <Link
                 href={`https://mumbai.polygonscan.com/address/${addressFromQuery}`}
               >
-                <a className="mt-1 text-sm text-indigo-600 hover:text-indigo-900">
+                <a className="mt-1 text-sm text-pink-600 hover:text-pink-900">
                   {addressFromQuery}
                 </a>
               </Link>
@@ -238,7 +238,7 @@ const Offset: NextPage = ({
                     id="token"
                     name="token"
                     autoComplete="token"
-                    className="ml-3 inline-flex items-center shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm border-gray-300 rounded-md"
+                    className="ml-3 inline-flex items-center shadow-sm focus:ring-pink-500 focus:border-pink-500 text-sm border-gray-300 rounded-md"
                   >
                     <option value="">
                       Pick a token to use when offsetting
@@ -268,7 +268,7 @@ const Offset: NextPage = ({
                       handleOffset();
                     }}
                     type="button"
-                    className="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    className="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
                   >
                     Offset All
                   </button>
@@ -334,7 +334,7 @@ const Offset: NextPage = ({
                         await getAndStoreTransactions(addressFromQuery);
                       }}
                       type="button"
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
                     >
                       Load Transactions of {addressFromQuery}
                     </button>

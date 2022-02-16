@@ -171,7 +171,7 @@ const Deposit: NextPage = ({
                             name="amount"
                             type="text"
                             autoComplete="amount"
-                            className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                            className="shadow-sm focus:ring-pink-500 focus:border-pink-500 block w-full sm:text-sm border-gray-300 rounded-md"
                           />
                         </div>
                       </div>
@@ -192,7 +192,7 @@ const Deposit: NextPage = ({
                             id="token"
                             name="token"
                             autoComplete="token"
-                            className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                            className="shadow-sm focus:ring-pink-500 focus:border-pink-500 block w-full sm:text-sm border-gray-300 rounded-md"
                           >
                             <option value="">Pick a token to deposit</option>
                             {balances
@@ -222,7 +222,7 @@ const Deposit: NextPage = ({
                   <div className="flex justify-end">
                     <button
                       type="submit"
-                      className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
                     >
                       Deposit
                     </button>

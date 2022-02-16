@@ -57,7 +57,7 @@ const BalancesTable = ({ balances }: { balances: ifcBalance[] }) => {
                           <Link
                             href={`https://mumbai.polygonscan.com/address/${token.address}`}
                           >
-                            <a className="text-indigo-600 hover:text-indigo-900">
+                            <a className="text-pink-600 hover:text-pink-900">
                               {token.address.substring(0, 15) + "..."}
                             </a>
                           </Link>

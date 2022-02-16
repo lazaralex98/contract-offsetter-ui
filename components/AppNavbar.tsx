@@ -55,7 +55,7 @@ const AppNavbar = ({
                       <a
                         className={classNames(
                           item.current
-                            ? "border-indigo-500 text-gray-900"
+                            ? "border-pink-500 text-gray-900"
                             : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",
                           "inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
                         )}
@@ -73,7 +73,7 @@ const AppNavbar = ({
                   <div>
                     <Menu.Button className="max-w-xs bg-white flex items-center text-sm">
                       <span className="sr-only">Open user menu</span>
-                      <span className="inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                      <span className="inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500">
                         {wallet}
                       </span>
                     </Menu.Button>
@@ -110,7 +110,7 @@ const AppNavbar = ({
               </div>
               <div className="-mr-2 flex items-center sm:hidden">
                 {/* Mobile menu button */}
-                <Disclosure.Button className="bg-white inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <Disclosure.Button className="bg-white inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500">
                   <span className="sr-only">Open main menu</span>
                   {open ? (
                     <XIcon className="block h-6 w-6" aria-hidden="true" />
@@ -131,7 +131,7 @@ const AppNavbar = ({
                   href={item.href}
                   className={classNames(
                     item.current
-                      ? "bg-indigo-50 border-indigo-500 text-indigo-700"
+                      ? "bg-pink-50 border-pink-500 text-pink-700"
                       : "border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800",
                     "block pl-3 pr-4 py-2 border-l-4 text-base font-medium"
                   )}

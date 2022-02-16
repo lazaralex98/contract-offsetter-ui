@@ -56,7 +56,7 @@ const TransactionsTable = ({
                       <Link
                         href={`https://mumbai.polygonscan.com/tx/${transaction.hash}`}
                       >
-                        <a className="text-indigo-600 hover:text-indigo-900">
+                        <a className="text-pink-600 hover:text-pink-900">
                           {transaction.hash.substring(0, 15) + "..."}
                         </a>
                       </Link>
