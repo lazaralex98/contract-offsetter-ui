@@ -42,7 +42,7 @@ const AppNavbar = ({
               <div className="flex">
                 <div className="flex-shrink-0 flex items-center">
                   <Image
-                    src="/toucan-logo.svg"
+                    src="/tc_onBright_logo.svg"
                     height={128}
                     width={128}
                     className="block lg:hidden h-8 w-auto"

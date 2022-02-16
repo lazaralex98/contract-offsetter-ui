@@ -55,7 +55,7 @@ const Home: NextPage = ({
                       <a>
                         <span className="sr-only">Toucan</span>
                         <Image
-                          src="/toucan-logo.svg"
+                          src="/tc_onBright_logo.svg"
                           width={128}
                           height={128}
                           className="h-8 w-auto sm:h-10"
